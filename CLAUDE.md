@@ -113,6 +113,37 @@ git push origin main
 
 ---
 
+## ⚠️ IMPORTANT: Template Folder Structure
+
+When user **downloads** and **installs** this template:
+
+| In gsd-template/ | After download → Rename to |
+|------------------|---------------------------|
+| `gsd/` | `.claude/` |
+| `TEMPLATE.md` | `CLAUDE.md` |
+
+**This is critical because:**
+- Claude Code ONLY reads `.claude/` folder
+- Claude Code ONLY reads root `CLAUDE.md`
+
+Current folder structure (needs rename after download):
+
+```
+gsd-template/                         # COPY this folder
+├── gsd/                            # RENAME TO .claude/
+│   ├── agents/                    # Subagents
+│   ├── commands/                  # GSD slash commands
+│   ├── get-shit-done/             # Core workflow logic
+│   ├── hooks/                     # Automation hooks
+│   └── skills/                    # Enforceable rules
+├── TEMPLATE.md                     # RENAME TO CLAUDE.md
+├── gsd-file-manifest.json
+├── settings.json
+└── settings.local.json
+```
+
+---
+
 ## How to Trace a Workflow
 
 Example: `/gsd:new-project`
