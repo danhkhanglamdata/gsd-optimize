@@ -1,142 +1,149 @@
-# CLAUDE.md — Working Context for Template Development
-Last updated: 2026-04-11
+# CLAUDE.md — Working Context for GSD Template Development
+Last updated: 2026-04-12
 
 ---
 
-## Project: GSD Template for Claude Code
+## Project Overview
 
-**Mục tiêu:** Build và hoàn thiện template GSD (Get Shit Done) để publish lên GitHub — template generic dùng cho mọi dự án Claude Code.
+**This is the GSD Template project** — we are building a generic, production-ready template for Claude Code to publish on GitHub.
 
----
-
-## Công việc hiện tại
-
-Bạn đang làm việc trên **template development**, không phải building a product. Nhiệm vụ:
-
-1. **Đọc và hiểu** các files trong `gsd-template/`
-2. **Review và cải tiến** agents, commands, workflows, templates
-3. **Đảm bảo template generic** — không có project-specific assumptions
-4. **Loại bỏ context cũ** (EventVib, specific references)
+**gsd-template/ is the PRODUCT** — like source code of an app. Everything we do centers on improving this folder.
 
 ---
 
-## ⚠️ QUAN TRỌNG: Memory & Git Requirements
+## Workflow: Overall → Detailed
 
-### Memory Requirements
+We work from **top-level to specific** — examining each GSD workflow component by component:
 
-**MỌI LẦN thực hiện thay đổi đều phải ghi lại:**
+### Phase 1: Understand Current Structure
+1. **GSD new-project workflow** — What does it do? Which agents? What files created?
+2. **Relationships** — How do files connect to each other?
+3. **Dependencies** — What depends on what?
 
-1. **Trước khi bắt đầu làm việc mới:**
-   - Đọc tất cả files trong `memory/` 
-   - Hiểu đã làm gì trước đó
-   - Tránh trùng lặp hoặc bỏ sót
+### Phase 2: Review & Improve Each Component
+1. **TEMPLATE.md** — Agent instructions for template users
+2. **gsd/skills/** — Enforceable rules (remove EventVib)
+3. **gsd/agents/** — Subagents (verify context loading)
+4. **gsd/commands/** — Slash commands
+5. **gsd/get-shit-done/** — Core logic + templates
 
-2. **Sau mỗi lần thay đổi:**
-   - Tạo file memory mới trong `memory/`
-   - Format: `YYYY-MM-DD-action.md` (ví dụ: `2026-04-11-fix-template.md`)
-   - Nội dung: Câu hỏi → Câu trả lời → Thay đổi đã thực hiện → Kết quả
-
-3. **Nội dung memory phải có:**
-   - Câu hỏi của user
-   - Câu trả lời/phân tích của bạn
-   - File đã sửa đổi
-   - Lý do thay đổi
-
-### Git Requirements
-
-**MỌI LẦN thay đổi đều phải commit:**
-
-1. **Khởi tạo Git (một lần):**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial: GSD template structure"
-   ```
-
-2. **Commit mỗi lần thay đổi:**
-   - Tạo repo trên GitHub trước
-   - Commit message phải theo conventional commits:
-     ```
-     <type>(<scope>): <description>
-
-     [optional body]
-
-     [optional footer]
-     ```
-
-3. **Types được phép:**
-   - `feat`: Thêm feature mới
-   - `fix`: Sửa bug
-   - `refactor`: Cải thiện code/template
-   - `docs`: Thay đổi documentation
-   - `chore`: Cấu hình, setup
-   - `style`: Format, không thay đổi logic
-
-4. **Ví dụ commit messages:**
-   ```
-   docs(TEMPLATE): update agent instructions for generic use
-   
-   refactor(skills): remove EventVib-specific brand colors
-   
-   fix(settings): disable hooks for template-only mode
-   
-   feat(CLAUDE.md): add memory and git requirements
-   ```
-
-5. **Push sau mỗi commit:**
-   ```bash
-   git push origin main
-   ```
+### Phase 3: Propose Improvements
+- Add new rules
+- Fix generic issues
+- Improve documentation
+- Ensure links remain intact
 
 ---
 
-## Cấu trúc Template
+## Detailed Investigation Process
 
-```
-gsd-template/
-├── gsd/                    # Framework files
-│   ├── agents/             # Subagents
-│   ├── commands/           # GSD slash commands
-│   ├── get-shit-done/      # Core workflow logic
-│   ├── hooks/              # Automation hooks
-│   └── skills/             # Enforceable rules
-├── TEMPLATE.md             # Agent instructions cho user
-├── gsd-file-manifest.json
-├── settings.json
-└── settings.local.json
+For EACH GSD component, you must:
+
+### Step 1: Identify the Component
+Example: `/gsd:new-project` command
+
+### Step 2: Trace the Workflow
+- Read command file: `gsd/commands/gsd/new-project.md`
+- Read workflow file: `gsd/get-shit-done/workflows/new-project.md`
+- Identify agents spawned
+
+### Step 3: Map File Relationships
+- What files does this create?
+- What templates does it use?
+- What agents does it call?
+
+### Step 4: Review for Generic Issues
+- Any project-specific references (EventVib, specific tables)?
+- Any hardcoded values that should be generic?
+- Any missing documentation?
+
+### Step 5: Propose Improvements
+- Note issues found
+- Suggest fixes
+- Document what should change
+
+---
+
+## Memory & Git Requirements
+
+### Memory (MUST)
+
+**Before starting work:**
+- Read ALL files in `memory/` folder
+- Understand what was done before
+- Avoid duplication
+
+**After each change:**
+- Create new memory file: `memory/YYYY-MM-DD-action.md`
+- Include:
+  - User's question/request
+  - Your analysis
+  - Changes made
+  - Results
+  - Next steps
+
+### Git (MUST)
+
+**After each change:**
+```bash
+git add .
+git commit -m "type(scope): description"
+git push origin main
 ```
 
+**Commit types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Improve code/template
+- `docs`: Documentation
+- `chore`: Configuration
+
 ---
 
-## Công việc cần làm
+## Priority Tasks
 
-| Priority | Task | Status |
-|----------|------|--------|
+| # | Task | Status |
+|---|------|--------|
 | 1 | Review TEMPLATE.md | Pending |
-| 2 | Clean up gsd/skills/ | Pending |
-| 3 | Review gsd/agents/ | Pending |
-| 4 | Review gsd/commands/ | Pending |
-| 5 | Verify gsd/get-shit-done/ | Pending |
+| 2 | Trace /gsd:new-project workflow | Pending |
+| 3 | Clean up gsd/skills/ | Pending |
+| 4 | Review gsd/agents/ | Pending |
+| 5 | Review gsd/commands/ | Pending |
+| 6 | Review gsd/get-shit-done/ | Pending |
 
 ---
 
-## Non-Negotiables cho Template
+## How to Trace a Workflow
 
-- **Generic** — Không assumptions về stack, domain
-- **Complete** — Đủ để template chạy standalone
-- **Documented** — Clear usage instructions
-- **No project-specific** — Remove EventVib references
+Example: `/gsd:new-project`
+
+```
+gsd/commands/gsd/new-project.md
+    ↓ reads
+gsd/get-shit-done/workflows/new-project.md
+    ↓ spawns
+gsd/agents/gsd-project-researcher.md (x4)
+gsd/agents/gsd-roadmapper.md
+gsd/agents/gsd-ideator.md
+    ↓ creates
+.planning/PROJECT.md (from template)
+.planning/REQUIREMENTS.md
+.planning/ROADMAP.md
+.planning/STATE.md
+.planning/codebase/STRUCTURE.md
+.planning/codebase/CONVENTIONS.md
+```
+
+**Your job:** Trace each workflow, understand the chain, identify issues, propose improvements.
 
 ---
 
-## Cách làm việc
+## Non-Negotiables
 
-1. **Đọc memory cũ** → `memory/*.md`
-2. **Đọc file cần làm** → Hiểu nội dung
-3. **Identify issues** → Vấn đề cần fix
-4. **Fix trực tiếp** → Edit files trong gsd-template/
-5. **Tạo memory mới** → Ghi lại thay đổi
-6. **Commit + Push** → Git history sạch
+- **Generic** — No project-specific assumptions
+- **Complete** — Template must work standalone
+- **Documented** — Clear instructions for AI agents
+- **Links intact** — When modifying, ensure relationships remain
 
 ---
 
@@ -144,8 +151,7 @@ gsd-template/
 
 | Task | Action |
 |------|--------|
-| Read memory | `ls memory/` → đọc tất cả |
+| Read memory | `ls memory/` → read all |
 | Create memory | `memory/YYYY-MM-DD-action.md` |
+| Trace workflow | Read command → workflow → agents → templates |
 | Git commit | `git commit -m "type(scope): description"` |
-| Review skills | `gsd/skills/*/SKILL.md` |
-| Review agents | `gsd/agents/*.md` |
