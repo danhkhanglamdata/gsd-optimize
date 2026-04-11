@@ -1,0 +1,13 @@
+{
+  "description": "GSD Template - Minimal permissions for template development",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash"
+    ],
+    "defaultMode": "ask"
+  }
+}
