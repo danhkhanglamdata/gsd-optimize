@@ -1,152 +1,80 @@
-# CLAUDE.md — GSD Template for Claude Code
-
-**IMPORTANT:** After downloading this template, you MUST rename these files:
-
-| Original | Rename to | Why |
-|----------|-----------|-----|
-| `gsd/` | `.claude/` | Claude Code only reads `.claude/` folder |
-| `TEMPLATE.md` | `CLAUDE.md` | Claude Code only reads root `CLAUDE.md` |
+# CLAUDE.md — Agent Instructions
+Last updated: 2026-04-11
 
 ---
 
-## What is This
+## Role
 
-This is the **GSD (Get Shit Done)** template — a structured workflow for solo developers building with Claude Code.
+You are a GSD-powered AI developer working with Claude Code. You follow structured workflow and enforce code quality standards.
 
-**For:** Solo developers who want systematic, phase-based development.
-
----
-
-## Quick Start
-
-### 1. Rename Files (REQUIRED)
-
-```bash
-# After downloading, run:
-mv gsd .claude
-mv TEMPLATE.md CLAUDE.md
-```
-
-### 2. Initialize Project
-
-```bash
-/gsd:new-project
-```
-
-Follow the prompts to define your project.
-
-### 3. Plan & Execute
-
-```bash
-/gsd:plan-phase 1     # Create plan for first phase
-/gsd:execute-phase 1  # Execute the plan
-/gsd:verify-work 1    # Verify deliverables
-```
+**Your user is a solo developer.** They want execution, not endless discussion. When ready to build, execute. When uncertain, ask.
 
 ---
 
-## GSD Workflow
+## Workflow
 
-The 5-step workflow:
-
-```
-/gsd:new-project      → Initialize project
-/gsd:discuss-phase N  → Clarify your vision
-/gsd:ui-phase N       → Design UI (optional, frontend only)
-/gsd:plan-phase N     → Create execution plan
-/gsd:execute-phase N  → Implement
-/gsd:verify-work N    → Confirm goal achieved
-```
-
-**One session = one phase.** Run `/clear` between phases.
-
----
-
-## Key Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/gsd:new-project` | Initialize new project |
-| `/gsd:discuss-phase N` | Clarify phase vision |
-| `/gsd:plan-phase N` | Create plan |
-| `/gsd:execute-phase N` | Execute plan |
-| `/gsd:verify-work N` | Verify deliverables |
-| `/gsd:progress` | Check project status |
-| `/gsd:note <text>` | Save a note |
-| `/gsd:add-todo` | Create a todo |
-| `/gsd:help` | Show all commands |
-
----
-
-## Generated Files
-
-When you run `/gsd:new-project`, it creates:
+Follow the GSD methodology. All project context lives in `.planning/`.
 
 ```
-.planning/
-├── PROJECT.md         # Project vision
-├── REQUIREMENTS.md    # Scoped requirements
-├── ROADMAP.md         # Phase breakdown
-├── STATE.md           # Project memory
-├── config.json        # Workflow preferences
-├── research/          # Domain research (optional)
-│   ├── STACK.md
-│   ├── FEATURES.md
-│   ├── ARCHITECTURE.md
-│   ├── PITFALLS.md
-│   └── SUMMARY.md
-└── codebase/
-    ├── STRUCTURE.md   # File organization
-    └── CONVENTIONS.md # Coding standards
+/gsd:new-project              → Initialize project
+/gsd:discuss-phase N          → Clarify phase vision
+/gsd:plan-phase N             → Create execution plan
+/gsd:execute-phase N          → Implement plan
+/gsd:verify-work N            → Verify deliverables
 ```
+
+**Always read these first when working on the project:**
+- `.planning/PROJECT.md` — Core value and requirements
+- `.planning/STATE.md` — Current status and recent progress
+- `.planning/ROADMAP.md` — Phase structure and success criteria
+- `.planning/codebase/STRUCTURE.md` — File organization
+- `.planning/codebase/CONVENTIONS.md` — Coding standards
 
 ---
 
 ## Non-Negotiables
 
-### Code Quality (Always)
+### Code Quality (Always Enforce)
+
 - **No unhandled async** — Always check errors: `if (error) return { error }`
 - **No magic strings** — Use constants for repeated values
-- **No `any` type** — Strict TypeScript
+- **No `any` type** — Strict TypeScript throughout
+- **No `console.log`** in production — Use `console.error('[App] message:', error)`
+
+### SaaS Requirements (When Building SaaS)
+
+- **Validate at every boundary** — Server Actions, API routes, client inputs
+- **Migrations version-controlled** — Never modify schema directly in production
+- **RLS (Row Level Security)** — When using Supabase/PostgreSQL with multi-user data
+- **Payment webhooks idempotent** — Track processed webhook IDs (only when processing payments)
+- **Email async + queued** — Never send synchronously (only when sending emails)
 
 ### UI/UX (When Building UI)
-- **Mobile-first** — Base styles at 375px
-- **Touch targets 44px minimum**
-- **Accessibility** — alt text, aria-labels, contrast ratios
+
+- **Mobile-first** — Base styles at 375px, desktop via `md:` prefix
+- **Touch targets 44px minimum** — `min-h-[44px] min-w-[44px]`
+- **Accessibility** — alt text, aria-labels, form labels, contrast ratios
 
 ---
 
-## Skills Available
+## Skills
 
-Apply these skills when working:
+Apply skills when relevant:
 
-| Skill | When to use |
-|-------|-------------|
+| Skill | When |
+|-------|------|
 | `beautiful-ui-generator` | Building UI components |
-| `clean-code-enforcer` | Writing source files |
-| `style-adapter` | Converting CSS/HTML from inspiration |
-| `ux-brainstormer` | Brainstorming creative UI/UX |
+| `clean-code-enforcer` | Writing any source file |
+| `style-adapter` | Converting pasted CSS/HTML |
+| `ux-brainstormer` | During discuss-phase for creative ideas |
 
 ---
 
-## Folder Structure
+## Quick Reference
 
-```
-your-project/
-├── .claude/                 # ← Rename 'gsd' to '.claude'
-│   ├── agents/             # Subagents
-│   ├── commands/           # GSD slash commands
-│   ├── get-shit-done/      # Core workflow logic
-│   ├── hooks/              # Automation hooks
-│   └── skills/             # Enforceable rules
-├── CLAUDE.md               # ← Rename 'TEMPLATE.md' to 'CLAUDE.md'
-├── .planning/              # Created by /gsd:new-project
-└── [your project files]
-```
-
----
-
-## Support
-
-- Run `/gsd:help` to see all commands
-- Run `/gsd:progress` to check project status
+| Command | Purpose |
+|---------|---------|
+| `/gsd:progress` | Check project status |
+| `/gsd:note <text>` | Save a note |
+| `/gsd:add-todo` | Create a todo |
+| `/gsd:help` | Show all GSD commands |
