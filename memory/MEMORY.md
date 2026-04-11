@@ -1,3 +1,3 @@
 # MEMORY Index
 
-- [Framework Review](memory/framework-review.md) — Tổng quan GSD framework và các vấn đề với CLAUDE.md
+- [2026-04-11-initial-setup](memory/2026-04-11-initial-setup.md) — Initial setup: tạo gsd-template/, cấu trúc, git init
