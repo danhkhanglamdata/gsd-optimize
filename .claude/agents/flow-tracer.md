@@ -98,61 +98,112 @@ graph, call `mcp__memory__create_relations`. For every new observation
 
 ### Step 7 — Write flow documentation
 
+**Minimum requirement trước khi viết:**
+Đếm tổng số `<step>` blocks trong workflow file. Số "Steps Chi Tiết" trong
+output PHẢI bằng số steps đó. Nếu thiếu step → output chưa hoàn chỉnh.
+
 Create two files:
 
 **File 1: `docs/component-flows/[command-name]-flow.md`**
 
+Dưới đây là filled example để hiểu mức độ chi tiết cần đạt — KHÔNG copy,
+dùng làm chuẩn tham chiếu:
+
+```
+## Flow Chain (ví dụ đã điền — new-project)
+
+commands/gsd/new-project.md
+    ↓ loads workflow (via execution_context)
+workflows/new-project.md  [10 steps]
+    ↓ step 1: initialize
+        └─ bash: gsd-tools.cjs init new-project → trả về config JSON
+        └─ gate: nếu project đã tồn tại → hỏi overwrite
+    ↓ step 2: brownfield-check
+        └─ nếu có code sẵn → offer: chạy map-codebase trước
+    ↓ step 3: deep-questioning
+        └─ agent hỏi user 8 câu hỏi theo questioning.md
+    ↓ step 4: brainstorm → spawns gsd-ideator.md
+        └─ gsd-ideator reads: templates/brainstorm.md
+        └─ gsd-ideator output: .planning/BRAINSTORM.md (tạm thời)
+    ↓ step 5: write-project → reads templates/project.md
+        └─ creates: .planning/PROJECT.md
+    ↓ step 6: research-decision
+        └─ hỏi user: có muốn research không?
+        └─ nếu yes → spawns gsd-project-researcher.md × 4 (parallel)
+            └─ each creates: research/STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
+    ↓ step 7: define-requirements
+        └─ creates: .planning/REQUIREMENTS.md
+    ↓ step 8: create-roadmap → spawns gsd-roadmapper.md
+        └─ gsd-roadmapper reads: PROJECT.md, REQUIREMENTS.md
+        └─ creates: .planning/ROADMAP.md
+    ↓ step 9: codebase-blueprint
+        └─ creates: .planning/codebase/STRUCTURE.md
+        └─ creates: .planning/codebase/CONVENTIONS.md
+    ↓ step 10: finalize
+        └─ creates: .planning/STATE.md
+        └─ git commit (nếu git enabled)
+```
+
+**Template thực tế để điền:**
+
 ```markdown
-# [Command Name] — Flow Chain
+# /gsd:[command-name] — Flow Chain
 
 ## Tổng quan
-[2-3 câu mô tả command này làm gì]
-
-## Khi nào user dùng
-[Use case cụ thể]
+[2-3 câu: command làm gì, khi nào dùng, output chính là gì]
 
 ## Flow Chain
 
-[Command File]
-    ↓ loads workflow
-[Workflow File]
-    ↓ step 1: [tên bước]
-    ↓ step 2: [tên bước] → spawns [Agent A]
-        └─ [Agent A] reads [Template X] → creates [Output File]
-    ↓ step 3: [tên bước] → spawns [Agent B]
-        └─ [Agent B] reads [Reference Y] → creates [Output File]
-    ↓ step N: [tên bước]
+[Diagram dạng trên — điền THỰC TẾ từ file đọc được, không placeholder]
 
 ## Steps Chi Tiết
+[Mỗi step một section. Phải đủ N steps = số <step> blocks trong workflow file]
 
-### Step 1: [Tên]
-**Mục đích:** [Làm gì]
-**Hành động:** [Cụ thể]
-**Gate:** [Điều kiện pass/fail nếu có]
-**Output:** [Tạo ra gì]
+### Step [N]: [Tên chính xác từ step name attribute]
 
-[Lặp lại cho tất cả steps]
+**Mục đích:** [1 câu — bước này làm gì trong tổng thể flow]
+
+**Hành động:**
+[Liệt kê từng hành động nhỏ — copy sát với nội dung file, không paraphrase chung chung]
+- Chạy bash: `[lệnh cụ thể]`
+- Đọc file: `[path cụ thể]`
+- Gọi agent: `[tên agent]` với context `[files truyền vào]`
+
+**Gate:**
+- Pass khi: [điều kiện chính xác từ file]
+- Fail khi: [điều kiện] → [xử lý: retry / abort / ask user]
+
+**Output bước này:** [file nào được tạo/cập nhật, hoặc "none"]
+
+---
 
 ## Agents Được Gọi
 
-| Agent | Mục đích | Input | Output |
-|-------|----------|-------|--------|
-| [agent-name] | [làm gì] | [đọc gì] | [tạo ra gì] |
+| Agent | Điều kiện gọi | Files đọc vào | Files tạo ra |
+|-------|--------------|---------------|-------------|
+| `gsd-[name].md` | [bước N, điều kiện gì] | [danh sách files] | [danh sách files] |
 
 ## Files Được Tạo Ra
 
-| File | Mô tả | Template dùng |
-|------|-------|---------------|
-| .planning/[file] | [mô tả] | [template] |
+| File | Nội dung | Template dùng | Tạo ở Step |
+|------|----------|---------------|------------|
+| `.planning/PROJECT.md` | [mô tả nội dung] | `templates/project.md` | Step 5 |
 
 ## Dependencies
 
-**Phải chạy trước:** [command nào cần chạy trước]
-**Tạo context cho:** [command nào đọc output của command này]
+**Cần chạy trước:** [command hoặc "none — greenfield start"]
+**Output được dùng bởi:** [commands nào đọc files vừa tạo]
 
 ## Issues Phát Hiện
 
-[Danh sách vấn đề cụ thể nếu có: broken references, hardcoded paths, v.v.]
+Format bắt buộc — mỗi issue một dòng:
+`[file:dòng_số] — [loại: HARDCODED_PATH | DEAD_REF | PROJECT_SPECIFIC | UNCLEAR_LOGIC] — [mô tả] — [đề xuất]`
+
+Ví dụ:
+`[workflows/new-project.md:49] — HARDCODED_PATH — node "C:/Users/Admin/..." — thay bằng relative path`
+`[agents/gsd-ideator.md:12] — PROJECT_SPECIFIC — "EventVib brainstorm" — thay bằng generic product brainstorm`
+
+Nếu không có issues: ghi "Không phát hiện issues."
 ```
 
 **File 2: Update `docs/workflow-overview.md`**

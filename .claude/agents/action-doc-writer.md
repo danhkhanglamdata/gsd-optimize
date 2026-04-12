@@ -55,20 +55,34 @@ For each file, extract everything relevant:
 - Exact files created and their format
 - Side effects (git commits, state changes, config updates)
 
-### Step 3 — Identify all flags and modes
+### Step 3 — Identify ALL flags and modes
 
-Many GSD commands have flags that change behavior significantly. Document
-ALL of them:
+Before writing, count flags explicitly:
 
+```bash
+# Đếm flags trong command file
+grep -n "\-\-" gsd-template/gsd/commands/gsd/[command].md
+# Đếm flags trong workflow file
+grep -n "\-\-" gsd-template/gsd/get-shit-done/workflows/[command].md
 ```
-/gsd:plan-phase --auto        → what changes?
-/gsd:plan-phase --research    → what changes?
-/gsd:plan-phase --skip-verify → what changes?
-/gsd:plan-phase --gaps        → what changes?
-```
 
-Each flag must be documented with: what it does, when to use it, what it
-changes in the default flow.
+Ghi nhận: "Command này có [N] flags: --flag1, --flag2, --flag3"
+
+Mỗi flag phải document đủ 3 thông tin:
+1. Thay đổi gì so với default flow (không phải "bỏ qua bước X" mà là "bỏ qua bước X = không hỏi user về Y, không tạo file Z")
+2. Khi nào nên dùng (use case cụ thể)
+3. Có thể kết hợp với flags khác không
+
+Đây là filled example để hiểu mức độ:
+```
+--auto (plan-phase)
+  Thay đổi: Bỏ qua interactive questioning ở Step 2.
+            Thay vào đó đọc context từ file được @ reference.
+            Auto-approve research và plan output mà không hỏi user.
+  Dùng khi: User đã có PRD/spec file, muốn chạy không cần tương tác.
+  Kết hợp: Dùng được với --research, không dùng được với --skip-verify
+           (vì auto mode vẫn cần verify để đảm bảo chất lượng)
+```
 
 ### Step 4 — Map the complete input/output contract
 
@@ -228,15 +242,32 @@ mcp__memory__add_observations:
 docs/actions/[command-name].md   ← primary output
 ```
 
-## Quality Standard
+## Completeness Checklist — Bắt buộc trước khi kết thúc
 
-Before finishing, ask yourself:
-1. Can a developer run this command correctly without opening gsd-template/?
-2. Can an AI agent understand the full input/output contract from this doc?
-3. Are all flags documented with their behavioral differences?
-4. Are all issues flagged with file + line reference?
+Chạy từng check. Nếu bất kỳ check nào fail → quay lại sửa, không nộp output thiếu.
 
-If any answer is No — go back and complete it.
+```
+[ ] FLAGS: Đếm flags trong source = [N]. Đếm flags đã document = [N]. Hai số phải bằng nhau.
+
+[ ] STEPS: Đếm <step> blocks trong workflow file = [N].
+           Đếm "Bước" sections trong output = [N]. Hai số phải bằng nhau.
+
+[ ] GATES: Mỗi bước có gate → mỗi gate có cả Pass condition VÀ Fail behavior.
+           Không chấp nhận gate chỉ có "if error → stop" mà không nói xử lý thế nào.
+
+[ ] OUTPUT FILES: Mỗi file được tạo ra có đủ 4 cột: path, mô tả nội dung, template dùng, tạo ở step nào.
+
+[ ] EXAMPLES: Có ít nhất 2 ví dụ — 1 default flow, 1 với flag.
+              Mỗi ví dụ có: scenario context, lệnh chạy, kết quả cụ thể.
+
+[ ] ISSUES: Mỗi issue có format: [file:dòng] — [loại] — [mô tả] — [đề xuất].
+            Không có issues chung chung như "có vấn đề với paths".
+
+[ ] SELF-TEST: Đọc lại toàn bộ doc với câu hỏi:
+    "Nếu tôi là AI agent chưa từng thấy gsd-template/, tôi có thể chạy
+     command này chính xác chỉ từ doc này không?"
+    Nếu NO → bổ sung thông tin còn thiếu.
+```
 
 ## Critical Rules
 

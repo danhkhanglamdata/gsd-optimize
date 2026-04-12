@@ -47,12 +47,73 @@ find gsd-template/gsd/skills -name "*.md"
 
 ### Step 2 — Create nodes for every file
 
-For each file discovered, create an entity in MCP:
+For each file discovered, create an entity in MCP using `mcp__memory__create_entities`.
 
+Entity name = filename without path. Entity type = one of the 6 types below.
+Observations must follow the exact format per node type — no free-form text.
+
+**CommandNode** (files in `commands/gsd/`):
 ```
-Entity name:   filename without path (e.g. "new-project.md")
-Entity type:   CommandNode | WorkflowNode | AgentNode | TemplateNode | ReferenceNode | SkillNode
-Observations:  ["path: gsd-template/gsd/commands/gsd/new-project.md", "creates: PROJECT.md, ROADMAP.md, STATE.md"]
+name: "new-project.md"
+type: CommandNode
+observations:
+  - "path: gsd-template/gsd/commands/gsd/new-project.md"
+  - "flags: --auto"
+  - "calls-workflow: new-project.md"
+  - "allowed-tools: Read,Bash,Write,Task,AskUserQuestion"
+```
+
+**WorkflowNode** (files in `get-shit-done/workflows/`):
+```
+name: "new-project.md" → disambiguate as "workflow:new-project.md"
+type: WorkflowNode
+observations:
+  - "path: gsd-template/gsd/get-shit-done/workflows/new-project.md"
+  - "step-count: [N]"
+  - "spawns: gsd-ideator.md, gsd-project-researcher.md, gsd-roadmapper.md"
+  - "creates: .planning/PROJECT.md, .planning/ROADMAP.md, .planning/STATE.md"
+  - "reads-templates: project.md, roadmap.md"
+  - "reads-references: questioning.md, ui-brand.md"
+```
+
+**AgentNode** (files in `agents/`):
+```
+name: "gsd-planner.md"
+type: AgentNode
+observations:
+  - "path: gsd-template/gsd/agents/gsd-planner.md"
+  - "tools: Read,Write,Bash,Glob,Grep,Task,WebFetch"
+  - "reads: .planning/PROJECT.md, .planning/ROADMAP.md"
+  - "output: .planning/[phase]/PLAN.md"
+```
+
+**TemplateNode** (files in `get-shit-done/templates/`):
+```
+name: "project.md"
+type: TemplateNode
+observations:
+  - "path: gsd-template/gsd/get-shit-done/templates/project.md"
+  - "used-by: workflow:new-project.md"
+  - "produces: .planning/PROJECT.md"
+```
+
+**ReferenceNode** (files in `get-shit-done/references/`):
+```
+name: "questioning.md"
+type: ReferenceNode
+observations:
+  - "path: gsd-template/gsd/get-shit-done/references/questioning.md"
+  - "read-by: workflow:new-project.md"
+```
+
+**SkillNode** (files in `skills/`):
+```
+name: "clean-code-enforcer"
+type: SkillNode
+observations:
+  - "path: gsd-template/gsd/skills/clean-code-enforcer/SKILL.md"
+  - "required-by: [workflow or phase name if found, else 'unlinked']"
+  - "rule-count: [N rules in file]"
 ```
 
 Use `mcp__memory__create_entities` with this structure for each file.
