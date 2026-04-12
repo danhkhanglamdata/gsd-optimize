@@ -1,4 +1,9 @@
 # Agents — Reference Documentation
+> Loại: Agent Reference
+> Tạo bởi: manual
+> Ngày: 2026-04-12
+> Phiên bản gsd-template: v1.34.0
+> Trạng thái: Approved
 
 Các agents thực thi nằm ở `.claude/agents/`. Thư mục này chứa tài liệu
 mô tả vai trò, input/output, và cách gọi từng agent.

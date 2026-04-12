@@ -293,27 +293,167 @@ Ghi nhận trong quá trình trace:
 
 ---
 
-## Output Structure
+## Tổ chức Docs — Cấu trúc & Quy tắc
+
+### Cấu trúc thư mục bắt buộc
 
 ```
 docs/
-├── workflow-overview.md          # Toàn cảnh GSD workflow
-├── file-relationships.md         # Ma trận quan hệ giữa các files
-├── component-flows/              # Flow chain từng command
+├── agents/                      # Tài liệu mô tả từng agent (ai đọc, không ai chạy)
+│   ├── README.md                # Index + cách gọi từng agent
+│   ├── graph-builder.md
+│   ├── flow-tracer.md
+│   ├── action-doc-writer.md
+│   └── link-auditor.md
+│
+├── component-flows/             # Flow chain của từng GSD command
 │   ├── new-project-flow.md
 │   ├── discuss-phase-flow.md
 │   ├── plan-phase-flow.md
 │   ├── execute-phase-flow.md
 │   └── verify-work-flow.md
-└── actions/                      # Docs chi tiết từng action
-    ├── new-project.md
-    ├── discuss-phase.md
-    ├── plan-phase.md
-    ├── execute-phase.md
-    └── verify-work.md
+│
+├── actions/                     # Docs chi tiết từng GSD command
+│   ├── new-project.md
+│   ├── discuss-phase.md
+│   ├── plan-phase.md
+│   ├── execute-phase.md
+│   └── verify-work.md
+│
+├── proposals/                   # Đề xuất thay đổi gsd-template/ chờ approve
+│   └── [YYYY-MM-DD]-[tên].md
+│
+├── workflow-overview.md         # Tổng quan toàn bộ GSD workflow
+├── file-relationships.md        # Ma trận quan hệ files trong gsd-template/
+├── graph-build-report.md        # Báo cáo build MCP graph (do graph-builder tạo)
+└── audit-report-[YYYY-MM-DD].md # Báo cáo audit (do link-auditor tạo)
 
-INTERNAL_CHANGELOG.md             # Ở root — log mọi thay đổi
+INTERNAL_CHANGELOG.md            # Ở root — log mọi thay đổi theo thời gian
 ```
+
+---
+
+### Quy tắc đặt tên file
+
+| Loại | Convention | Ví dụ |
+|------|-----------|-------|
+| Flow docs | `[command-name]-flow.md` | `new-project-flow.md` |
+| Action docs | `[command-name].md` | `plan-phase.md` |
+| Proposals | `[YYYY-MM-DD]-[slug].md` | `2026-04-12-fix-hardcoded-paths.md` |
+| Audit reports | `audit-report-[YYYY-MM-DD].md` | `audit-report-2026-04-12.md` |
+| Agent docs | `[agent-name].md` | `flow-tracer.md` |
+
+**Tất cả tên file:** kebab-case, chữ thường, không dấu, không space.
+
+---
+
+### Quy tắc nội dung — áp dụng cho MỌI file trong docs/
+
+**1. Header bắt buộc**
+
+Mỗi file phải bắt đầu bằng:
+
+```markdown
+# [Tên tài liệu]
+> Loại: [Flow Doc | Action Doc | Proposal | Audit Report | Agent Reference]
+> Tạo bởi: [agent-name]
+> Ngày: [YYYY-MM-DD]
+> Phiên bản gsd-template: [đọc từ package.json hoặc README version]
+> Trạng thái: [Draft | Review | Approved | Stale]
+```
+
+**2. Ngôn ngữ**
+
+| Phần | Ngôn ngữ |
+|------|---------|
+| Nội dung giải thích, mô tả | Tiếng Việt |
+| Tên file, đường dẫn, commands | English/gốc |
+| Code blocks, bash commands | English/gốc |
+| Tên agents, nodes, edges | English/gốc |
+| Issues, proposals | Tiếng Việt (mô tả) + English (file:line) |
+
+**3. Cross-reference format**
+
+Khi reference đến file khác trong docs/:
+```markdown
+→ Xem: [docs/actions/plan-phase.md](docs/actions/plan-phase.md)
+```
+
+Khi reference đến file trong gsd-template/:
+```markdown
+→ Nguồn: `gsd-template/gsd/commands/gsd/plan-phase.md`
+```
+
+Không dùng absolute paths. Không dùng `../` relative paths.
+
+**4. Trạng thái tài liệu**
+
+Mỗi doc phải có trạng thái rõ ràng trong header:
+
+| Trạng thái | Ý nghĩa |
+|-----------|---------|
+| `Draft` | Agent đang viết, chưa review |
+| `Review` | Hoàn thành, chờ link-auditor review |
+| `Approved` | Đã qua audit, có thể dùng làm reference |
+| `Stale` | gsd-template đã thay đổi, doc này cần cập nhật |
+
+---
+
+### Quy tắc riêng từng loại doc
+
+**component-flows/ — Flow docs**
+- Phải có Flow Chain diagram dạng ASCII
+- Số "Steps Chi Tiết" = số `<step>` blocks trong workflow file nguồn
+- Phải có section "Issues Phát Hiện" — nếu không có issues, ghi rõ "Không phát hiện issues"
+- Không được để `[placeholder]` chưa điền trong output cuối
+
+**actions/ — Action docs**
+- Số flags trong bảng Arguments = số flags tìm được bằng grep trong source
+- Mỗi step có đủ: Mục đích + Hành động cụ thể + Gate (Pass/Fail) + Output
+- Phải có ít nhất 2 Ví dụ Thực tế: 1 default flow, 1 với flag
+- Phải có Completeness Checklist đã tick đủ ở cuối file (do action-doc-writer tự check)
+
+**proposals/ — Đề xuất thay đổi gsd-template/**
+- Đây là file duy nhất liên quan đến việc SỬA gsd-template/
+- Format bắt buộc:
+
+```markdown
+# Proposal: [Tên thay đổi]
+> Loại: Proposal
+> Tạo bởi: [agent]
+> Ngày: [YYYY-MM-DD]
+> Trạng thái: [Pending | Approved | Rejected]
+
+## Vấn đề
+[File nào, dòng nào, vấn đề gì — có quote trực tiếp từ file]
+
+## Đề xuất sửa
+[Nội dung cũ → Nội dung mới — cụ thể, không chung chung]
+
+## Lý do
+[Tại sao cần sửa]
+
+## Impact
+[Sửa file này ảnh hưởng đến những file nào khác — query từ MCP graph]
+
+## Approved by
+[ ] Chờ review
+```
+
+**audit-report — Audit reports**
+- Không được xóa audit reports cũ — chúng là lịch sử
+- Nếu issue đã được fix, thêm note vào report cũ: `~~[issue]~~ Fixed: [date] - [proposal file]`
+
+---
+
+### Quy tắc freshness — Khi nào docs bị Stale
+
+Một doc chuyển sang `Stale` khi:
+1. File nguồn trong gsd-template/ được sửa (sau khi proposal approved)
+2. Một agent mới được thêm vào làm thay đổi flow
+3. Ngày tạo doc > 30 ngày (flag để review, không tự động Stale)
+
+Link Auditor có trách nhiệm detect và đánh dấu `Stale` trong header.
 
 ---
 
