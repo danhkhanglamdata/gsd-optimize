@@ -184,18 +184,23 @@ phải verification, đó là lời hứa.
 
 ---
 
-## ⚠️ CRITICAL: gsd-template/ là READ-ONLY
+## ⚠️ CRITICAL: gsd-template/ — Approval Gate
 
-| Action | Allowed? | Location |
-|--------|----------|----------|
-| Đọc files trong gsd-template/ | ✅ YES | — |
-| Ghi/Sửa bất kỳ file nào trong gsd-template/ | ❌ KHÔNG BAO GIỜ | — |
+Mục tiêu cuối cùng của project là cải tiến các file trong `gsd-template/`.
+Tuy nhiên, không được sửa tùy tiện — mọi thay đổi phải qua approval gate.
+
+| Giai đoạn | Action | Allowed? |
+|---|---|---|
+| Đang phân tích, chưa có proposal | Sửa gsd-template/ | ❌ |
+| Đã có proposal, chưa được approve | Sửa gsd-template/ | ❌ |
+| User đã approve thay đổi cụ thể | Sửa đúng file đó | ✅ |
 | Ghi documentation output | ✅ YES | `docs/` only |
 
-**Nếu phát hiện cần sửa trong gsd-template:**
-1. Ghi vào `memory/` và `INTERNAL_CHANGELOG.md`: file nào, dòng nào, sửa gì, tại sao
-2. Chờ user review và approve
-3. Tuyệt đối không tự ý sửa
+**Quy trình bắt buộc trước khi sửa:**
+1. Đề xuất cụ thể: file nào, dòng nào, sửa gì, tại sao
+2. Ghi vào `docs/` hoặc `INTERNAL_CHANGELOG.md`
+3. Chờ user approve
+4. Sau khi approve — thực hiện chính xác theo đề xuất, không thêm bớt
 
 ---
 
