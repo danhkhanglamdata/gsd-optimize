@@ -100,10 +100,17 @@ Mỗi flag phải document đủ 3 thông tin:
 
 ### Step 5 — Write the documentation file
 
-Create `docs/actions/[command-name].md` with this exact structure:
+Create `docs/actions/[command-name].md` với đúng format sau:
 
 ```markdown
 # /gsd:[command-name]
+> Loại: Action Doc
+> Tạo bởi: action-doc-writer
+> Ngày: [YYYY-MM-DD]
+> Phiên bản gsd-template: [đọc từ README.md của gsd-template]
+> Trạng thái: Draft
+> Nguồn command: `gsd-template/gsd/commands/gsd/[command-name].md`
+> Nguồn workflow: `gsd-template/gsd/get-shit-done/workflows/[command-name].md`
 
 ## Mục đích
 [1-2 câu: command này giải quyết vấn đề gì trong workflow của user]
@@ -212,12 +219,17 @@ Kết quả: [khác gì so với default]
 
 ## Issues Phát Hiện
 
-[Danh sách vấn đề trong file nguồn nếu có:
-- Hardcoded paths
-- Project-specific references
-- Broken links
-- Logic không rõ ràng
-Format: [file:dòng] — [vấn đề] — [đề xuất sửa]]
+Format bắt buộc — mỗi issue một dòng:
+`[file:dòng_số] — [loại: HARDCODED_PATH | DEAD_REF | PROJECT_SPECIFIC | UNCLEAR_LOGIC] — [mô tả] — [đề xuất]`
+
+Nếu không có issues: ghi "Không phát hiện issues."
+
+## Proposals Được Tạo
+
+[Danh sách proposal files đã tạo trong session này]
+→ Xem: [docs/proposals/YYYY-MM-DD-tên.md](../proposals/YYYY-MM-DD-tên.md)
+
+Nếu không tạo proposal: ghi "Không có proposals."
 
 ---
 
@@ -225,13 +237,24 @@ Format: [file:dòng] — [vấn đề] — [đề xuất sửa]]
 [Edge cases, gotchas, điều quan trọng cần biết khi dùng command này]
 ```
 
-### Step 6 — Update MCP graph
+### Step 6 — Tạo Proposals cho Issues Tìm Thấy
+
+Với mỗi issue tìm thấy trong quá trình đọc source files:
+
+Tạo file `docs/proposals/[YYYY-MM-DD]-[command-name]-[slug].md`
+
+Đọc template từ `docs/proposals/README.md` và điền đầy đủ:
+- Vấn đề: file nguồn + số dòng + quote nội dung gốc
+- Đề xuất: nội dung thay thế cụ thể (không chung chung)
+- Impact: query MCP graph — những file nào phụ thuộc vào file cần sửa
+
+### Step 7 — Update MCP graph
 
 After writing docs, add an observation to the command node:
 ```
 mcp__memory__add_observations:
   entity: "[command-name].md"
-  observations: ["documented: docs/actions/[command-name].md"]
+  observations: ["documented: docs/actions/[command-name].md", "status: Draft"]
 ```
 
 ---

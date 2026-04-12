@@ -151,26 +151,32 @@ If no incoming edges → add observation: "ORPHAN: no workflow calls this file"
 
 ### Step 5 — Write summary report
 
-Create `docs/graph-build-report.md` with:
+Create `docs/graph-build-report.md` với đúng format sau:
 
 ```markdown
-# Knowledge Graph Build Report
-Date: [date]
+# Knowledge Graph — Báo cáo Build
+> Loại: Graph Build Report
+> Tạo bởi: graph-builder
+> Ngày: [YYYY-MM-DD]
+> Phiên bản gsd-template: [đọc từ README.md của gsd-template]
+> Trạng thái: Draft
 
-## Nodes Created
-| Type | Count |
-|------|-------|
+## Tổng kết Nodes
+
+| Loại Node | Số lượng |
+|-----------|---------|
 | CommandNode | N |
 | WorkflowNode | N |
 | AgentNode | N |
 | TemplateNode | N |
 | ReferenceNode | N |
 | SkillNode | N |
-| **Total** | **N** |
+| **Tổng cộng** | **N** |
 
-## Edges Created
-| Type | Count |
-|------|-------|
+## Tổng kết Edges
+
+| Loại Edge | Số lượng |
+|-----------|---------|
 | TRIGGERS | N |
 | SPAWNS | N |
 | USES_TEMPLATE | N |
@@ -178,12 +184,46 @@ Date: [date]
 | CREATES | N |
 | REQUIRED_BY | N |
 
-## Orphan Nodes Found
-- [list of files with no incoming edges]
+## Nodes Mồ Côi (Orphans)
 
-## Issues Detected
-- [any broken references or missing files]
+Các files không có incoming edges — không có workflow hoặc command nào gọi đến:
+
+| File | Loại | Đề xuất |
+|------|------|---------|
+| [tên file] | [NodeType] | Xem xét xóa hoặc tích hợp vào workflow |
+
+Nếu không có orphans: ghi "Không phát hiện nodes mồ côi."
+
+## Issues Phát Hiện
+
+Các vấn đề tìm thấy trong quá trình build graph:
+
+| File nguồn | Vấn đề | Loại |
+|-----------|--------|------|
+| `[path:dòng]` | [mô tả] | DEAD_REF \| MISSING_FILE \| HARDCODED_PATH |
+
+Nếu không có issues: ghi "Không phát hiện issues."
+
+## Proposals Được Tạo
+
+[Danh sách files đã tạo trong docs/proposals/ từ session này]
+- `docs/proposals/[YYYY-MM-DD]-[tên].md` — [vấn đề ngắn gọn]
+
+Nếu không tạo proposal: ghi "Không có proposals."
 ```
+
+### Step 5b — Tạo Proposals cho Issues Nghiêm trọng
+
+Với mỗi issue loại `DEAD_REF`, `MISSING_FILE`, hoặc `HARDCODED_PATH` tìm thấy ở Step 3-4:
+
+Tạo file `docs/proposals/[YYYY-MM-DD]-[slug].md` theo đúng template trong
+`docs/proposals/README.md`.
+
+Ghi rõ:
+- File nào bị ảnh hưởng (path + số dòng)
+- Quote nội dung gốc bị lỗi
+- Đề xuất nội dung thay thế
+- Impact: những nodes nào trong graph bị ảnh hưởng nếu sửa
 
 ---
 

@@ -148,6 +148,12 @@ workflows/new-project.md  [10 steps]
 
 ```markdown
 # /gsd:[command-name] — Flow Chain
+> Loại: Flow Doc
+> Tạo bởi: flow-tracer
+> Ngày: [YYYY-MM-DD]
+> Phiên bản gsd-template: [đọc từ README.md của gsd-template]
+> Trạng thái: Draft
+> Nguồn: `gsd-template/gsd/commands/gsd/[command-name].md`
 
 ## Tổng quan
 [2-3 câu: command làm gì, khi nào dùng, output chính là gì]
@@ -204,7 +210,26 @@ Ví dụ:
 `[agents/gsd-ideator.md:12] — PROJECT_SPECIFIC — "EventVib brainstorm" — thay bằng generic product brainstorm`
 
 Nếu không có issues: ghi "Không phát hiện issues."
+
+## Proposals Được Tạo
+
+[Danh sách proposal files đã tạo trong session này]
+→ Xem: [docs/proposals/YYYY-MM-DD-tên.md](../proposals/YYYY-MM-DD-tên.md)
+
+Nếu không tạo proposal: ghi "Không có proposals."
 ```
+
+### Step 7b — Tạo Proposals cho Issues Tìm Thấy
+
+Với mỗi issue tìm thấy trong quá trình trace, tạo file proposal:
+`docs/proposals/[YYYY-MM-DD]-[command-name]-[slug].md`
+
+Đọc template từ `docs/proposals/README.md` và điền đầy đủ:
+- Vấn đề: file nguồn + số dòng + quote nội dung gốc
+- Đề xuất: nội dung thay thế cụ thể
+- Impact: query MCP graph để biết files nào bị ảnh hưởng nếu sửa
+
+Ghi lại proposal files đã tạo vào section "Proposals Được Tạo" trong flow doc.
 
 **File 2: Update `docs/workflow-overview.md`**
 

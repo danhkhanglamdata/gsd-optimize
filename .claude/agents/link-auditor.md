@@ -155,60 +155,115 @@ mcp__memory__add_observations:
 
 ## Output
 
-Write audit report to `docs/audit-report-[YYYY-MM-DD].md`:
+Write audit report to `docs/audit-report-[YYYY-MM-DD].md` với đúng format:
 
 ```markdown
-# Audit Report — [Date]
+# Audit Report — [YYYY-MM-DD]
+> Loại: Audit Report
+> Tạo bởi: link-auditor
+> Ngày: [YYYY-MM-DD]
+> Phiên bản gsd-template: [đọc từ README.md của gsd-template]
+> Trạng thái: Draft
+> Phạm vi: [Full Audit | Targeted: command-name]
 
-## Summary
-| Check | Issues Found |
-|-------|-------------|
+## Tóm tắt
+
+| Loại Kiểm tra | Số Issues |
+|--------------|-----------|
 | Broken References | N |
-| Orphan Nodes | N |
-| Contradictions | N |
-| Cycles | N |
-| Ambiguous Instructions | N |
-| Stale Graph Nodes | N |
-| **Total** | **N** |
+| Nodes Mồ Côi | N |
+| Mâu thuẫn (CONTRADICTS) | N |
+| Vòng lặp (Cycles) | N |
+| Chỉ dẫn Mơ hồ | N |
+| Graph Nodes Stale | N |
+| **Tổng cộng** | **N** |
 
 ## Broken References
-[list with file:line format]
 
-## Orphan Nodes
-[list with removal recommendation]
+Format: `[docs/file.md:dòng] → [path không tồn tại]`
 
-## Contradictions
-[list with specific quote from each file + resolution suggestion]
+[Danh sách]
 
-## Cycles
-[list with assessment: intentional or error]
+Nếu không có: "Không phát hiện broken references."
 
-## Ambiguous Instructions
-[list with file:line, quote, and suggested rewrite]
+## Nodes Mồ Côi
 
-## Stale Graph Nodes
-[list of nodes marked stale]
+Format: `[tên-node] ([NodeType]) — không có workflow nào gọi đến`
 
-## Recommended Actions
-Priority order for fixes:
-1. [highest priority issue]
-2. ...
+[Danh sách kèm đề xuất: xóa | tích hợp vào workflow nào]
 
-## Approved to Proceed?
-[ ] YES — all critical issues resolved
-[ ] NO — issues above must be fixed before merging changes
+## Mâu thuẫn (CONTRADICTS)
+
+Format chuẩn cho mỗi contradiction:
+
+---
+**[file-A.md:dòng]** nói:
+> "[quote nguyên văn từ file A]"
+
+**[file-B.md:dòng]** nói:
+> "[quote nguyên văn từ file B]"
+
+Mâu thuẫn: [giải thích cụ thể tại sao hai đoạn này mâu thuẫn nhau]
+Đề xuất: [hướng giải quyết]
+→ Proposal: `docs/proposals/[YYYY-MM-DD]-contradiction-[slug].md`
+---
+
+## Vòng lặp (Cycles)
+
+Format: `[A] → [B] → [C] → [A]`
+Đánh giá: Intentional | Error
+Nếu Error → tạo proposal
+
+## Chỉ dẫn Mơ hồ
+
+Format:
 ```
+[docs/file.md:dòng]
+Gốc: "[câu mơ hồ]"
+Vấn đề: [giải thích]
+Đề xuất: "[câu viết lại cụ thể hơn]"
+```
+
+## Graph Nodes Stale
+
+Format: `[tên-node] — file không còn tồn tại trên disk`
+
+## Proposals Được Tạo
+
+[Danh sách tất cả proposal files tạo ra trong session audit này]
+- → Xem: [docs/proposals/YYYY-MM-DD-tên.md](../proposals/YYYY-MM-DD-tên.md)
+
+Nếu không tạo proposal: ghi "Không có proposals."
+
+## Đã được Phê duyệt?
+
+[ ] YES — tất cả critical issues đã được tạo proposal
+[ ] NO — còn issues chưa có proposal: [liệt kê]
+```
+
+---
+
+## Tạo Proposals Sau Audit
+
+Với mỗi issue nghiêm trọng (Broken Reference, Contradiction, Cycle lỗi):
+
+1. Tạo file `docs/proposals/[YYYY-MM-DD]-[slug].md`
+2. Đọc template từ `docs/proposals/README.md`
+3. Điền đầy đủ: vấn đề + quote gốc + đề xuất sửa + impact từ MCP graph
+4. Ghi link vào section "Proposals Được Tạo" của audit report
+
+Với Ambiguous Instructions: tạo proposal nếu mức độ nghiêm trọng cao
+(agent có thể hiểu sai dẫn đến hành động sai). Nếu chỉ là cải thiện văn phong → ghi vào report, không cần proposal.
 
 ---
 
 ## Graph Maintenance After Audit
 
-After completing the audit:
-
-1. Create all `CONTRADICTS` edges found
-2. Mark orphan nodes with `"ORPHAN"` observation
-3. Mark stale nodes with `"STALE"` observation
-4. Do NOT delete nodes without explicit user approval
+1. Tạo tất cả `CONTRADICTS` edges tìm thấy
+2. Mark orphan nodes với observation `"ORPHAN: [date]"`
+3. Mark stale nodes với observation `"STALE: file không còn tồn tại [date]"`
+4. Update Trạng thái của docs được audit: Draft → Review
+5. KHÔNG xóa graph nodes khi chưa có user approval
 
 ---
 
