@@ -204,6 +204,71 @@ Tuy nhiên, không được sửa tùy tiện — mọi thay đổi phải qua a
 
 ---
 
+## MCP Knowledge Graph — Bộ não trung tâm
+
+Graph là shared memory của toàn bộ đội ngũ agent. Mọi agent đều query
+graph trước khi làm việc và update graph sau khi hoàn thành.
+
+### Node Types
+
+| Type | Ví dụ |
+|---|---|
+| `CommandNode` | `/gsd:new-project`, `/gsd:plan-phase` |
+| `WorkflowNode` | `workflows/new-project.md`, `workflows/execute-phase.md` |
+| `AgentNode` | `gsd-planner.md`, `gsd-verifier.md`, `gsd-ideator.md` |
+| `TemplateNode` | `templates/project.md`, `templates/roadmap.md` |
+| `ReferenceNode` | `references/questioning.md`, `references/ui-brand.md` |
+| `SkillNode` | `clean-code-enforcer`, `beautiful-ui-generator` |
+
+### Edge Types
+
+| Edge | Ý nghĩa |
+|---|---|
+| `TRIGGERS` | Command → Workflow |
+| `SPAWNS` | Workflow → Agent |
+| `USES_TEMPLATE` | Workflow/Agent → Template |
+| `READS` | Agent → Reference hoặc Template |
+| `CREATES` | Workflow → `.planning/[file]` |
+| `REQUIRED_BY` | Skill → Phase/Workflow |
+| `CONTRADICTS` | Instruction A mâu thuẫn với Instruction B |
+
+### Agent Workflow với Graph
+
+**Orchestrator:**
+- Query graph trước khi giao việc: *"Cái gì phụ thuộc vào file này?"*
+- Dùng kết quả để xác định impact scope của thay đổi
+
+**Skill Engineer:**
+- Query graph để hiểu relationships của file đang viết docs
+- Sau khi viết xong, insert/update nodes liên quan
+
+**Link Auditor (Graph Maintainer):**
+- Sau mỗi batch thay đổi, update edges trong graph
+- Chạy orphan detection: nodes không có incoming edges = chỉ dẫn mồ côi
+- Chạy CONTRADICTS check: phát hiện chỉ dẫn mâu thuẫn giữa các files
+- Chạy cycle detection trước khi approve batch lớn
+
+**Gatekeeper:**
+- Xác nhận graph đã được update trước khi pass
+
+### MCP Tools
+
+```
+mcp__memory__create_entities   — tạo node mới
+mcp__memory__create_relations  — tạo edge mới
+mcp__memory__search_nodes      — query theo keyword
+mcp__memory__open_nodes        — lấy thông tin node cụ thể
+mcp__memory__delete_entities   — xóa node đã lỗi thời
+```
+
+### Quy tắc duy trì Graph
+
+1. **Query trước khi sửa** — không sửa file nào mà chưa biết impact scope
+2. **Update sau khi sửa** — mọi thay đổi phải phản ánh vào graph
+3. **Graph là source of truth** — nếu graph và file mâu thuẫn, tin vào file, sửa graph
+
+---
+
 ## Quy trình Trace một Workflow
 
 Với mỗi command cần document, trace theo chain:
