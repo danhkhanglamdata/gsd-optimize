@@ -331,6 +331,65 @@ Gray areas:
 ```
 </step>
 
+<step name="detect_input_type">
+**NEW STEP — SPEC vs DISCUSS mode detection**
+
+After analyze_phase completes, determine if user provided a SPEC or wants to DISCUSS.
+
+**Detection Algorithm:**
+```
+INPUT: user_message_from_init OR first_user_input
+
+CONDITIONS (calculate score):
+  1. has_markdown_headers: /#{1,3}\s/.test(message)  // ## or ### headers
+  2. has_code_blocks: /```[\s\S]*?```/.test(message)  // code blocks exist
+  3. has_structured_format: /(\|.+?\|.*\n)+/.test(message) || /export (const|interface|type)/.test(message)  // tables or TypeScript
+  4. length_over_500: message.length > 500
+
+SCORE = count(conditions true)
+
+IF score >= 3:
+  MODE = "SPEC"
+  → Load gsd-requirement-explorer agent
+  → Call agent with (phase_number, user_message)
+  → Agent returns ParsedSpec + VerificationResult
+  → GOTO write_context (with spec content)
+
+IF score < 3:
+  MODE = "DISCUSS"
+  → Continue to present_gray_areas (existing flow)
+```
+
+**If SPEC mode detected:**
+
+Load the gsd-requirement-explorer agent:
+```
+@.claude/agents/gsd-requirement-explorer.md
+```
+
+Call the agent with:
+- phase_number: from init
+- user_message: the original spec text
+- prior_context: PROJECT.md, REQUIREMENTS.md, STATE.md (if exists)
+
+**Agent returns:**
+```typescript
+{
+  mode: "SPEC",
+  parsed: { fileStructure, constants, validators, uxRequirements, errorMessages, securityNotes },
+  verification: { complete: boolean, missing: string[] },
+  summary: string,  // Markdown for CONTEXT.md
+  specPath: string  // Path to saved original
+}
+```
+
+**If verification incomplete:**
+Agent prompts user: "Spec có [X] nhưng chưa đầy đủ. Bổ sung?"
+
+**If verification complete:**
+Proceed to write_context with SPEC-formatted content.
+</step>
+
 <step name="present_gray_areas">
 Present the domain boundary, prior decisions, and gray areas to user.
 

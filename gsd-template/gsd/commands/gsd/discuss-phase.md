@@ -37,6 +37,7 @@ Extract implementation decisions that downstream agents need — researcher and 
 @.claude/get-shit-done/templates/context.md
 @.claude/skills/ux-brainstormer/SKILL.md
 @.claude/skills/style-adapter/SKILL.md
+@.claude/agents/gsd-requirement-explorer.md
 </execution_context>
 
 <project_skills>
@@ -73,10 +74,12 @@ Context files are resolved in-workflow using `init phase-op` and roadmap/state t
 5. **Scout codebase** — Find reusable assets, patterns, and integration points
 6. **Research UI/UX trends** — Search for latest gamification, design patterns for the phase domain
 7. **Analyze phase** — Check prior decisions, skip already-decided areas, generate remaining gray areas
-8. **Generate creative suggestions** — Use ux-brainstormer to propose delight moments
+8. **DETECT INPUT TYPE** — Determine SPEC vs DISCUSS mode:
+   - If user provided detailed spec (score >= 3): Load gsd-requirement-explorer agent → parse spec → verify → write_context
+   - If user wants to discuss (score < 3): Continue to step 9
 9. **Present gray areas + creative options** — Multi-select: which to discuss? Annotate with prior decisions + code context
 10. **Deep-dive each area** — 4 questions per area, code-informed options, Context7 for library choices
-11. **Write CONTEXT.md** — Sections: decisions, creative_enhancements, code_context, deferred_ideas
+11. **Write CONTEXT.md** — Sections: decisions, creative_enhancements, code_context, deferred_ideas, spec_reference (if SPEC mode)
 12. Offer next steps (ui-phase or plan-phase)
 
 **CRITICAL: Scope guardrail**
