@@ -54,7 +54,7 @@ Extract implementation decisions that downstream agents need — researcher and 
    ```
 
 **During discuss, ALWAYS do:**
-- Search for latest trends: "gamification UI 2025", "event app design trends"
+- Search for latest trends: "[feature-domain] UI 2025", "[feature-domain] design trends"
 - Generate creative UX suggestions using ux-brainstormer
 - If user mentions inspiration site → use style-adapter to analyze
 - Present creative enhancements as options for user to choose
