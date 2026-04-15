@@ -1,7 +1,7 @@
 ---
 name: graph-builder
 description: Scans gsd-template/ and builds the MCP Knowledge Graph. Run once at project start or when template structure changes. Creates all nodes and edges representing file relationships.
-tools: Read, Glob, Grep, Bash, mcp__memory__create_entities, mcp__memory__create_relations, mcp__memory__search_nodes, mcp__memory__delete_entities
+tools: Read, Write, Glob, Grep, Bash, mcp__memory__create_entities, mcp__memory__create_relations, mcp__memory__search_nodes, mcp__memory__add_observations, mcp__memory__delete_entities
 ---
 
 # graph-builder
@@ -25,25 +25,18 @@ query before making any changes.
 
 ### Step 1 — Discover all files
 
-```bash
-# Commands
-ls gsd-template/gsd/commands/gsd/*.md
+Dùng Glob tool (không dùng bash find/ls để tránh lỗi trên Windows):
 
-# Workflows
-ls gsd-template/gsd/get-shit-done/workflows/*.md
-
-# Agents
-ls gsd-template/gsd/agents/*.md
-
-# Templates
-find gsd-template/gsd/get-shit-done/templates -name "*.md"
-
-# References
-ls gsd-template/gsd/get-shit-done/references/*.md
-
-# Skills
-find gsd-template/gsd/skills -name "*.md"
 ```
+Glob: gsd-template/gsd/commands/gsd/*.md          → Commands
+Glob: gsd-template/gsd/get-shit-done/workflows/*.md → Workflows (40 files)
+Glob: gsd-template/gsd/agents/*.md                  → Agents (16 files)
+Glob: gsd-template/gsd/get-shit-done/templates/**/*.md → Templates (có subdirs: codebase/, research-project/)
+Glob: gsd-template/gsd/get-shit-done/references/*.md → References
+Glob: gsd-template/gsd/skills/**/*.md               → Skills
+```
+
+Ghi nhận tổng số files mỗi loại.
 
 ### Step 2 — Create nodes for every file
 
@@ -69,6 +62,9 @@ name: "new-project.md" → disambiguate as "workflow:new-project.md"
 type: WorkflowNode
 observations:
   - "path: gsd-template/gsd/get-shit-done/workflows/new-project.md"
+  - "step-format: [xml-steps | numbered-sections]"
+    (xml-steps: dùng <step name="..."> — discuss-phase, execute-phase, verify-work)
+    (numbered-sections: dùng ## N. — new-project, plan-phase)
   - "step-count: [N]"
   - "spawns: gsd-ideator.md, gsd-project-researcher.md, gsd-roadmapper.md"
   - "creates: .planning/PROJECT.md, .planning/ROADMAP.md, .planning/STATE.md"
@@ -124,9 +120,12 @@ For each command file, read the `<execution_context>` block and extract
 all `@` references. These become `TRIGGERS` edges to workflow nodes.
 
 For each workflow file, scan for:
-- Agent names mentioned → `SPAWNS` edges
-- Template file references → `USES_TEMPLATE` edges
-- Reference file references → `READS` edges
+- `subagent_type="..."` patterns → `SPAWNS` edges (Task-based spawning)
+  **KHÔNG tạo SPAWNS edge cho `Skill(skill="...")` calls** — Skill invocations là command chaining, không phải agent spawning.
+  Ví dụ: discuss-phase dùng `Skill(skill="gsd:ui-phase")` → KHÔNG tạo SPAWNS edge
+- `@C:/.../*.md` hay `@gsd-template/...` patterns trong `<required_reading>` và `<execution_context>` → `READS` edges
+- Template file references (`templates/xxx.md`) → `USES_TEMPLATE` edges
+- Reference file references (`references/xxx.md`) → `READS` edges
 - Output files mentioned (`.planning/`) → `CREATES` edges
 
 For each skill file, scan for which phases or workflows require it →
@@ -148,6 +147,16 @@ Query: mcp__memory__search_nodes with each node name
 Check: does the node have any incoming edges?
 If no incoming edges → add observation: "ORPHAN: no workflow calls this file"
 ```
+
+### Step 4.5 — Flag hardcoded paths as issues
+
+Trong quá trình đọc workflow files, kiểm tra:
+```
+Grep: "C:/Users/Admin" trong gsd-template/gsd/get-shit-done/workflows/
+```
+
+Tất cả matches là HARDCODED_PATH issues — cần log vào report và tạo proposal.
+Đây là vấn đề hệ thống: toàn bộ workflow files đều có hardcoded absolute paths từ máy của user.
 
 ### Step 5 — Write summary report
 

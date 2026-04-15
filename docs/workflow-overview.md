@@ -264,11 +264,15 @@
 
 ```
 new-project → new-project.md → workflows/new-project.md → [gsd-ideator, gsd-project-researcher, gsd-roadmapper]
-discuss-phase → discuss-phase.md → workflows/discuss-phase.md → [ux-brainstormer]
-plan-phase → plan-phase.md → workflows/plan-phase.md → [gsd-planner, gsd-plan-checker]
+discuss-phase → discuss-phase.md → workflows/discuss-phase.md → [Skill: gsd:ui-phase, gsd:plan-phase]
+plan-phase → plan-phase.md → workflows/plan-phase.md → [gsd-phase-researcher, gsd-planner, gsd-plan-checker]
 execute-phase → execute-phase.md → workflows/execute-phase.md → [gsd-executor]
 verify-work → verify-work.md → workflows/verify-work.md → [gsd-verifier]
 ```
+
+> Xem chi tiết:
+> - [docs/component-flows/discuss-phase-flow.md](docs/component-flows/discuss-phase-flow.md)
+> - [docs/component-flows/plan-phase-flow.md](docs/component-flows/plan-phase-flow.md)
 
 ---
 

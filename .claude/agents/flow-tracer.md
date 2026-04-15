@@ -54,14 +54,23 @@ Extract:
 gsd-template/gsd/get-shit-done/workflows/[command-name].md
 ```
 
-Trace every `<step>` block in order. For each step, record:
-- Step name and priority
-- What bash commands it runs (note any `gsd-tools.cjs` calls)
-- What agents it spawns (look for `Task` tool calls or agent references)
-- What templates it reads
-- What files it creates
-- What gates it has (validation, error conditions, abort conditions)
-- What the next step is (routing logic)
+**Xác định format trước khi trace:**
+
+- **Format A (`<step>` XML):** discuss-phase, execute-phase, verify-work
+  → Trace từng `<step name="...">` block theo thứ tự
+- **Format B (`## N.` sections):** new-project, plan-phase
+  → Trace từng `## N. Title` section theo thứ tự (bỏ qua sub-sections như `## 5.5.` khi đếm bước chính)
+
+Với mỗi bước (dù Format A hay B), ghi nhận:
+- Tên bước và số thứ tự
+- Bash commands chạy (đặc biệt các lệnh `gsd-tools.cjs`)
+- Agents được spawn qua **Task tool** (KHÔNG phải Skill tool — Skill tool là chaining, khác với spawning)
+- Templates được đọc
+- Files được tạo ra
+- Gates có (điều kiện validate, abort, retry)
+- Routing logic (bước nào tiếp theo)
+
+**Lưu ý quan trọng:** discuss-phase dùng `Skill(skill="gsd:ui-phase")` và `Skill(skill="gsd:plan-phase")` — đây là Skill tool, KHÔNG phải Task spawning. Không tạo SPAWNS edge cho các invocation này.
 
 ### Step 4 — Read each agent spawned
 
@@ -99,47 +108,69 @@ graph, call `mcp__memory__create_relations`. For every new observation
 ### Step 7 — Write flow documentation
 
 **Minimum requirement trước khi viết:**
-Đếm tổng số `<step>` blocks trong workflow file. Số "Steps Chi Tiết" trong
-output PHẢI bằng số steps đó. Nếu thiếu step → output chưa hoàn chỉnh.
+
+Workflow files trong gsd-template/ có 2 format khác nhau — phải detect đúng:
+
+- **Format A (`<step>` XML tags):** dùng bởi `discuss-phase`, `execute-phase`, `verify-work`
+  ```bash
+  grep -c '<step name=' gsd-template/gsd/get-shit-done/workflows/[command].md
+  ```
+- **Format B (`## N.` numbered sections):** dùng bởi `new-project`, `plan-phase`
+  ```bash
+  grep -c '^## [0-9]' gsd-template/gsd/get-shit-done/workflows/[command].md
+  ```
+
+Đếm số bước theo đúng format của file đó. Ghi nhận: "Workflow này dùng Format [A|B], có [N] bước."
+
+Số "Steps Chi Tiết" trong output PHẢI bằng số bước đó. Nếu thiếu step → output chưa hoàn chỉnh.
+
+**Lưu ý thêm:**
+- workflow files chứa hardcoded paths dạng `C:/Users/Admin/...` — luôn flag là HARDCODED_PATH issue
+- discuss-phase KHÔNG spawn Task agents — nó dùng `Skill(skill="gsd:...")` tool để chain sang command khác
+- verify-work tạo output `{phase_num}-UAT.md` (KHÔNG phải VERIFICATION.md — VERIFICATION.md do execute-phase tạo)
 
 Create two files:
 
 **File 1: `docs/component-flows/[command-name]-flow.md`**
 
 Dưới đây là filled example để hiểu mức độ chi tiết cần đạt — KHÔNG copy,
-dùng làm chuẩn tham chiếu:
+dùng làm chuẩn tham chiếu. (Số bước trong ví dụ là minh họa — đọc file thực tế để có con số chính xác.)
 
 ```
-## Flow Chain (ví dụ đã điền — new-project)
+## Flow Chain (ví dụ đã điền — new-project, Format B: ## N. sections)
 
 commands/gsd/new-project.md
     ↓ loads workflow (via execution_context)
-workflows/new-project.md  [10 steps]
-    ↓ step 1: initialize
+workflows/new-project.md  [13 sections: 1, 2, 2a, 3, 3.5, 4, 5, 5.5, 6, 7, 8, 8.5, 9]
+    ↓ ## 1: Setup
         └─ bash: gsd-tools.cjs init new-project → trả về config JSON
-        └─ gate: nếu project đã tồn tại → hỏi overwrite
-    ↓ step 2: brownfield-check
+        └─ gate: nếu project đã tồn tại → error, dùng /gsd:progress
+    ↓ ## 2: Brownfield Offer
         └─ nếu có code sẵn → offer: chạy map-codebase trước
-    ↓ step 3: deep-questioning
-        └─ agent hỏi user 8 câu hỏi theo questioning.md
-    ↓ step 4: brainstorm → spawns gsd-ideator.md
-        └─ gsd-ideator reads: templates/brainstorm.md
-        └─ gsd-ideator output: .planning/BRAINSTORM.md (tạm thời)
-    ↓ step 5: write-project → reads templates/project.md
+    ↓ ## 2a: Auto Mode Config (chỉ khi --auto)
+        └─ thu thập granularity, git, agents settings
+    ↓ ## 3: Deep Questioning
+        └─ hỏi user về dự án (8 câu hỏi theo questioning.md)
+    ↓ ## 3.5: SaaS Brainstorm → spawns gsd-ideator.md
+        └─ output: .planning/BRAINSTORM.md (temporary)
+    ↓ ## 4: Write PROJECT.md → reads templates/project.md
         └─ creates: .planning/PROJECT.md
-    ↓ step 6: research-decision
+    ↓ ## 5: Workflow Preferences
+        └─ cấu hình YOLO mode, granularity, git, agents
+    ↓ ## 5.5: Resolve Model Profile
+    ↓ ## 6: Research Decision
         └─ hỏi user: có muốn research không?
-        └─ nếu yes → spawns gsd-project-researcher.md × 4 (parallel)
-            └─ each creates: research/STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
-    ↓ step 7: define-requirements
+        └─ nếu yes → spawns gsd-project-researcher.md × N (parallel)
+        └─ spawns gsd-research-synthesizer để tổng hợp
+    ↓ ## 7: Define Requirements
         └─ creates: .planning/REQUIREMENTS.md
-    ↓ step 8: create-roadmap → spawns gsd-roadmapper.md
+    ↓ ## 8: Create Roadmap → spawns gsd-roadmapper.md
         └─ gsd-roadmapper reads: PROJECT.md, REQUIREMENTS.md
         └─ creates: .planning/ROADMAP.md
-    ↓ step 9: codebase-blueprint
+    ↓ ## 8.5: Codebase Blueprint
         └─ creates: .planning/codebase/STRUCTURE.md
         └─ creates: .planning/codebase/CONVENTIONS.md
-    ↓ step 10: finalize
+    ↓ ## 9: Done
         └─ creates: .planning/STATE.md
         └─ git commit (nếu git enabled)
 ```
@@ -163,9 +194,9 @@ workflows/new-project.md  [10 steps]
 [Diagram dạng trên — điền THỰC TẾ từ file đọc được, không placeholder]
 
 ## Steps Chi Tiết
-[Mỗi step một section. Phải đủ N steps = số <step> blocks trong workflow file]
+[Mỗi step một section. Phải đủ N steps = số bước đếm được theo format của workflow (xem Step 7 detection)]
 
-### Step [N]: [Tên chính xác từ step name attribute]
+### Step [N]: [Format A: tên từ `name` attribute của `<step>` | Format B: tên từ `## N. Title` section heading]
 
 **Mục đích:** [1 câu — bước này làm gì trong tổng thể flow]
 

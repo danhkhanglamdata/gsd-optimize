@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(npx -y @modelcontextprotocol/server-memory --version)",
+      "MCP(mcp__memory__create_entities)",
+      "MCP(mcp__memory__create_relations)",
+      "MCP(mcp__memory__search_nodes)",
+      "MCP(mcp__memory__open_nodes)",
+      "MCP(mcp__memory__add_observations)",
+      "MCP(mcp__memory__delete_entities)"
+    ]
+  }
+}

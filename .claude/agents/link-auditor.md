@@ -109,6 +109,27 @@ Output format:
   → Verify this is intentional or a documentation error
 ```
 
+### Check 4.5 — PROJECT_SPECIFIC Content Detection
+
+Scan tất cả workflow files trong `gsd-template/gsd/get-shit-done/workflows/` cho nội dung project-specific:
+
+```
+Grep: "event app|EventVib|gamification|event gamification|mobile app design trends 2025"
+trong gsd-template/gsd/
+```
+
+Các patterns này là nội dung của một project cụ thể đã bị để lại trong template:
+- `workflows/discuss-phase.md` → analyze_phase step có: `"mobile app design trends 2025", "event app gamification"`
+- Bất kỳ file nào có references đến "EventVib" hoặc tên project cụ thể
+
+```
+Output format:
+[PROJECT_SPECIFIC] gsd-template/gsd/get-shit-done/workflows/discuss-phase.md:315
+  → "Search for latest trends: 'mobile app design trends 2025', 'event app gamification'"
+  → Template nên dùng search terms generic: "[feature-domain] design trends [year]"
+  → Tạo proposal: docs/proposals/[date]-discuss-phase-project-specific-content.md
+```
+
 ### Check 5 — Adversarial Instruction Review
 
 For each doc file in `docs/actions/` and `docs/component-flows/`, read it
@@ -138,10 +159,10 @@ Output format:
 
 Check if nodes in the graph match actual files on disk:
 
-```bash
-# Get all node names from graph
-# Compare against actual files in gsd-template/
-find gsd-template/gsd -name "*.md" | sort
+```
+# Dùng Glob tool (không dùng bash find — Windows compatibility)
+Glob: gsd-template/gsd/**/*.md
+# So sánh kết quả với node names trong MCP graph
 ```
 
 For any graph node whose file no longer exists:

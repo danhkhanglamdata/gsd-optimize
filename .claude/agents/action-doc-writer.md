@@ -75,13 +75,21 @@ Mỗi flag phải document đủ 3 thông tin:
 
 Đây là filled example để hiểu mức độ:
 ```
+--auto (discuss-phase)
+  Thay đổi: Bỏ qua interactive questioning (không hỏi user từng câu).
+            Auto-select ALL gray areas và chọn recommended option cho mỗi câu hỏi.
+            Sau khi xong, tự động chain sang /gsd:ui-phase hoặc /gsd:plan-phase.
+  Dùng khi: User đã có PRD/spec, muốn chạy pipeline không cần tương tác.
+  Kết hợp: Dùng được với --batch=N (gom câu hỏi thành batch). Thường được
+           truyền từ new-project --auto để chain toàn bộ pipeline.
+
 --auto (plan-phase)
-  Thay đổi: Bỏ qua interactive questioning ở Step 2.
-            Thay vào đó đọc context từ file được @ reference.
-            Auto-approve research và plan output mà không hỏi user.
-  Dùng khi: User đã có PRD/spec file, muốn chạy không cần tương tác.
-  Kết hợp: Dùng được với --research, không dùng được với --skip-verify
-           (vì auto mode vẫn cần verify để đảm bảo chất lượng)
+  Thay đổi: Bỏ qua research prompt (dùng config setting thay vì hỏi user).
+            Sau khi planning xong, auto-advance sang /gsd:execute-phase --auto.
+            KHÔNG đọc từ @ reference file — context đến từ CONTEXT.md đã có.
+  Dùng khi: Đang trong auto-advance chain từ discuss-phase --auto.
+  Kết hợp: Thường đi kèm với --no-transition (để tránh double-advance).
+           KHÔNG kết hợp với --skip-verify trong auto chain.
 ```
 
 ### Step 4 — Map the complete input/output contract
@@ -272,8 +280,9 @@ Chạy từng check. Nếu bất kỳ check nào fail → quay lại sửa, khô
 ```
 [ ] FLAGS: Đếm flags trong source = [N]. Đếm flags đã document = [N]. Hai số phải bằng nhau.
 
-[ ] STEPS: Đếm <step> blocks trong workflow file = [N].
-           Đếm "Bước" sections trong output = [N]. Hai số phải bằng nhau.
+[ ] STEPS: Xác định format workflow: Format A (<step> blocks) hay Format B (## N. sections).
+           Đếm bước trong source = [N]. Đếm "Bước" sections trong output = [N]. Hai số phải bằng nhau.
+           (Xem Known Facts section bên dưới để biết command nào dùng format nào)
 
 [ ] GATES: Mỗi bước có gate → mỗi gate có cả Pass condition VÀ Fail behavior.
            Không chấp nhận gate chỉ có "if error → stop" mà không nói xử lý thế nào.
@@ -299,3 +308,23 @@ Chạy từng check. Nếu bất kỳ check nào fail → quay lại sửa, khô
 - Document ALL flags — incomplete flag docs are worse than no docs
 - Issues must include file path and line number, not just description
 - Language: Vietnamese for content, English for code/file paths/commands
+
+## Known Facts — Kiểm tra trước khi viết docs
+
+Những sự thật quan trọng đã được verify từ source files:
+
+| Command | Output file | Tạo bởi |
+|---------|-------------|---------|
+| `/gsd:verify-work` | `{phase_num}-UAT.md` | verify-work workflow trực tiếp |
+| `/gsd:execute-phase` | `{phase_num}-VERIFICATION.md` | gsd-verifier agent (spawned trong execute-phase) |
+| `/gsd:discuss-phase` | `{padded_phase}-CONTEXT.md` | discuss-phase workflow trực tiếp |
+| `/gsd:plan-phase` | `{padded_phase}-PLAN.md` | gsd-planner agent |
+| `/gsd:new-project` | `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md` | new-project workflow |
+
+**Workflow format:**
+- new-project, plan-phase: dùng `## N. Title` numbered sections (KHÔNG phải `<step>` XML)
+- discuss-phase, execute-phase, verify-work: dùng `<step name="...">` XML blocks
+
+**discuss-phase đặc biệt:**
+- KHÔNG spawn Task agents — dùng `Skill(skill="gsd:ui-phase")` và `Skill(skill="gsd:plan-phase")` để chain
+- Bảng "Agents Được Gọi" sẽ rỗng hoặc ghi "N/A — dùng Skill tool thay Task tool"
