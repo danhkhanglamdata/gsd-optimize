@@ -161,7 +161,7 @@ Read .claude/skills/ux-brainstormer/SKILL.md
 ```
 
 **Step 2: Search for latest trends**
-- Search "mobile app design trends 2025 2026 event"
+- Search "[feature-domain] design trends 2025 2026"
 - Search "gamification UX patterns live events"
 - Search "realtime social app animations"
 

@@ -67,8 +67,8 @@ How do we make it addictive?
 ## Trend Research
 
 Before brainstorming, search for latest trends:
-- "mobile app design trends 2025 2026"
-- "event app UI inspiration"
+- "[feature-domain] design trends 2025 2026"
+- "[feature-domain] UI inspiration"
 - "gamification UX patterns"
 - "realtime social app design"
 
@@ -156,9 +156,9 @@ When user says:
 
 ```bash
 # Search for relevant inspiration
-WebSearch: "Kahoot quiz interface design"
-WebSearch: "gamification UI young audience 2025"
-WebSearch: "live event app gamification patterns"
+WebSearch: "[feature-domain] interface design"
+WebSearch: "gamification UI audience 2025"
+WebSearch: "live [feature-domain] gamification patterns"
 WebSearch: "quiz game animations inspiration"
 ```
 
