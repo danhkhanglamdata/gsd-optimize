@@ -77,4 +77,4 @@ Query từ MCP graph:
 
 ## Approved by
 
-[ ] Chờ review
+[x] 2026-04-15 — Approved by user — Bắt đầu thực hiện fix

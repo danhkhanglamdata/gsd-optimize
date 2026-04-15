@@ -11,7 +11,26 @@
       "MCP(mcp__memory__search_nodes)",
       "MCP(mcp__memory__open_nodes)",
       "MCP(mcp__memory__add_observations)",
-      "MCP(mcp__memory__delete_entities)"
+      "MCP(mcp__memory__delete_entities)",
+      "Skill(explore-template)",
+      "Bash(npm search *)",
+      "Bash(npm view *)",
+      "Bash(npx -y @modelcontextprotocol/server-memory --help)",
+      "Bash(node -e \"const data=require\\('fs'\\).readFileSync\\(0,'utf8'\\);try{const r=JSON.parse\\(data\\);console.log\\(r.map\\(p=>p.name\\).join\\('\\\\n'\\)\\)}catch\\(e\\){console.log\\(data.slice\\(0,500\\)\\)}\")",
+      "Bash(npx -y mcp-knowledge-graph --help)",
+      "mcp__ide__getDiagnostics",
+      "Bash(node -e \"const data=require\\('fs'\\).readFileSync\\(0,'utf8'\\);try{const r=JSON.parse\\(data\\);console.log\\(r.url\\)}catch\\(e\\){console.log\\(data\\)}\")",
+      "Bash(ls *)",
+      "Bash(claude *)",
+      "WebSearch",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(find . -name \"*.md\" -type f -exec sed -i 's|@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/|@.claude/|g' {} +)",
+      "Bash(find . -name \"*.md\" -type f -exec sed -i 's|\"C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/|.claude/|g' {} +)",
+      "Bash(find . -name \"*.md\" -type f -exec sed -i 's|C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/|.claude/|g' {} +)",
+      "Bash(find . -name \"*.md\" -type f -exec sed -i 's/EventVib//g; s/EventVibe//g' {} +)",
+      "WebFetch(domain:linear.app)",
+      "WebFetch(domain:vercel.com)",
+      "Bash(git commit *)"
     ]
   }
 }

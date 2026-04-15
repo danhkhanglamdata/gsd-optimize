@@ -1202,7 +1202,7 @@ Adjust directory names to match the actual project root (may be `app/` at root i
 
 | Type | Pattern | Example |
 |---|---|---|
-| React component | kebab-case.tsx | quiz-card.tsx |
+| React component | PascalCase.tsx | QuizCard.tsx |
 | Custom hook | use-name.ts | use-realtime-quiz.ts |
 | Server Action | domain-actions.ts | quiz-actions.ts |
 | Utility | kebab-case.ts | compute-points.ts |
@@ -1295,6 +1295,38 @@ Before creating any new file:
 3. Component duplicate — does a component with this name already exist?
 
 See: .claude/get-shit-done/references/codebase-blueprint.md for full rules.
+### Pre-Creation Validation
+
+Before generating codebase files, verify foundation:
+
+```bash
+echo "=== Codebase Blueprint Generation ==="
+
+# Check package.json exists
+if [ ! -f "package.json" ]; then
+  echo "WARNING: No package.json found"
+fi
+
+# Detect stack
+STACK=$(cat package.json 2>/dev/null | grep -E '"next"|"react"|"vite"|"supabase"' || echo "")
+echo "Detected stack: $STACK"
+
+# Check for existing foundation files
+if [ -f "tailwind.config.ts" ]; then
+  echo "✓ Tailwind detected"
+fi
+
+if [ -f "components.json" ]; then
+  echo "✓ shadcn/ui detected"
+fi
+
+if [ -f "src/lib/utils.ts" ] || [ -f "lib/utils.ts" ]; then
+  echo "✓ cn() utility found"
+else
+  echo "NOTE: Need to create cn() utility in UI phase"
+fi
+
+echo "Generating codebase blueprint files..."
 ```
 
 ### Commit
@@ -1332,110 +1364,552 @@ else
 fi
 
 # Generate ARCHITECTURE.md based on detected stack
+# If Next.js detected (has "next" in stack)
+if echo "$STACK" | grep -q '"next"'; then
+cat > .planning/codebase/ARCHITECTURE.md << 'EOF'
+# Architecture
+
+**Pattern:** Next.js 15 App Router + Server Actions + Supabase
+**Generated:** [date] during project initialization
+
+## Data Flow
+
+User → Page (Server Component) → Server Action → Supabase → revalidatePath → UI Update
+
+## Server Actions Pattern
+
+```typescript
+// lib/actions/[domain].ts
+'use server'
+import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
+
+export async function createThing(formData: FormData) {
+  const supabase = createClient()
+  
+  // Validate with Zod first
+  const validated = createThingSchema.safeParse({
+    name: formData.get('name'),
+  })
+  
+  if (!validated.success) {
+    return { error: validated.error.flatten().fieldErrors }
+  }
+  
+  const { data, error } = await supabase
+    .from('things')
+    .insert(validated.data)
+    .select()
+    .single()
+  
+  if (error) {
+    return { error: error.message }
+  }
+  
+  revalidatePath('/dashboard')
+  return { success: true, data }
+}
+```
+
+## Security Rules
+
+- NEVER trust client data — always validate server-side with Zod
+- RLS policies on ALL Supabase tables
+- Service role keys NEVER in client code
+- Use @supabase/ssr for server components
+
+## State Management
+
+| Type | Solution | When to Use |
+|------|----------|-------------|
+| Server state | Server Actions + revalidatePath | Data from DB |
+| Client state | Zustand | Complex UI state only |
+| Form state | React Hook Form + Zod | User input |
+| No Redux | - | Never needed |
+
+## Client vs Server Components
+
+| Use Server (default) | Use Client ('use client') |
+|-------------------|---------------------|
+| Fetching data | useState, useEffect |
+| Server Actions | onClick, onChange |
+| SEO pages | Browser APIs |
+| Redirect | localStorage |
+| Supabase call | Cookies |
+EOF
+
+# If React + Vite (has "vite" but no "next")
+elif echo "$STACK" | grep -q '"vite"'; then
+cat > .planning/codebase/ARCHITECTURE.md << 'EOF'
+# Architecture
+
+**Pattern:** React + Vite + Client-side only
+**Generated:** [date] during project initialization
+
+## Data Flow
+
+User → Component → API Client → External API → State Update
+
+## API Client Pattern
+
+```typescript
+// lib/api.ts
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+})
+
+// Request interceptor for auth
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Response interceptor for errors
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // Handle logout
+      localStorage.removeItem('token')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
+
+export default api
+```
+
+## State Management
+
+| Type | Solution | When to Use |
+|------|----------|-------------|
+| API state | React Query | Server data |
+| UI state | useState | Simple state |
+| Global | Zustand | Shared across components |
+| Form | React Hook Form | User input |
+
+## Security
+
+- NEVER expose API keys in client code
+- Use environment variables with VITE_ prefix
+- Validate all input with Zod
+EOF
+
+# Generic fallback
+else
 cat > .planning/codebase/ARCHITECTURE.md << 'EOF'
 # Architecture
 
 **Generated:** [date] during project initialization
-**Based on:** [Stack: e.g., "Next.js 15 App Router"]
+**Based on:** Detected stack from package.json
 
 ## Pattern Overview
 
-**Overall:** [Pattern: e.g., "Full-stack Next.js with Server Actions"]
+**Overall:** [Custom pattern]
 
 **Key Characteristics:**
-- [Characteristic 1]
-- [Characteristic 2]
-- [Characteristic 3]
+- TODO: Document key patterns after implementation
 
 ## Layers
 
-**[Layer Name]:**
-- Purpose: [What this layer does]
-- Location: [Where files live]
-- Depends on: [What it uses]
+| Layer | Purpose | Location |
+|-------|---------|----------|
+| Components | UI | src/components/ |
+| Logic | Business logic | src/lib/ |
+| Data | Data access | src/lib/ |
 
 ## Data Flow
 
-**[Flow Name]:**
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-**State Management:**
-- [How state is handled]
-
-## Entry Points
-
-- Server: [entry point]
-- Client: [entry point]
+1. User action → Component
+2. Component → API/Library
+3. API → External service
+4. Update state
 EOF
+fi
 
-# Generate TESTING.md based on stack
+# Generate TESTING.md based on stack detection
+# Detect test framework from package.json
+TEST_STACK=$(cat package.json 2>/dev/null | grep -E '"vitest"|"jest"|"playwright"|"testing-library"' || echo "")
+
+# If Vitest detected
+if echo "$TEST_STACK" | grep -q "vitest"; then
 cat > .planning/codebase/TESTING.md << 'EOF'
 # Testing Strategy
 
+**Framework:** Vitest 1.x + @testing-library/react
 **Generated:** [date] during project initialization
 
 ## Test Types
 
 | Type | Tool | Pattern |
 |------|------|---------|
-| Unit | [e.g., Vitest] | [e.g., "*.test.ts next to source"] |
-| Integration | [e.g., Vitest] | [e.g., "*.integration.test.ts"] |
-| E2E | [e.g., Playwright] | [e.g., "tests/e2e/*.spec.ts"] |
+| Unit | Vitest | *.test.ts next to source file |
+| Integration | Vitest | *.integration.test.ts |
+| Component | @testing-library/react | *.test.tsx |
 
 ## Test Organization
 
-- Unit tests: [location]
-- Integration tests: [location]
-- E2E tests: [location]
+```
+src/
+  components/
+    QuizCard.tsx       ← source
+    QuizCard.test.tsx   ← test (co-located)
+  lib/
+    utils.ts           ← source
+    utils.test.ts      ← test
+```
 
-## Naming
+## Commands
 
-- Unit: [e.g., "function-name.test.ts"]
-- E2E: [e.g., "feature.spec.ts"]
+```bash
+npm test              # Run all tests
+npm test -- --watch   # Watch mode
+npm run test:ui       # Vitest UI
+npm run test:coverage # Coverage report
+```
+
+## Testing Library Setup
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/setupTest.ts'],
+  },
+})
+
+// src/setupTest.ts
+import '@testing-library/jest-dom'
+```
+
+## Example Test
+
+```typescript
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { QuizCard } from './QuizCard'
+
+describe('QuizCard', () => {
+  it('renders question text', () => {
+    render(<QuizCard question="What is 2+2?" />)
+    expect(screen.getByText('What is 2+2?')).toBeInTheDocument()
+  })
+  
+  it('calls onAnswer when selected', async () => {
+    const onAnswer = vi.fn()
+    render(<QuizCard options={['1','2','3','4']} onAnswer={onAnswer} />)
+    
+    await userEvent.click(screen.getByText('2'))
+    expect(onAnswer).toHaveBeenCalledWith('2')
+  })
+})
+```
 EOF
 
-# Generate INTEGRATIONS.md (placeholder for external services)
+# If Jest detected (has jest but no vitest)
+elif echo "$TEST_STACK" | grep -q "jest"; then
+cat > .planning/codebase/TESTING.md << 'EOF'
+# Testing Strategy
+
+**Framework:** Jest + @testing-library/react
+**Generated:** [date] during project initialization
+
+## Test Types
+
+| Type | Tool | Pattern |
+|------|------|---------|
+| Unit | Jest | *.test.ts next to source |
+| Component | @testing-library/react | *.test.tsx |
+| E2E | Playwright | tests/e2e/*.spec.ts |
+
+## Commands
+
+```bash
+npm test              # Run all tests
+npm test -- --watch   # Watch mode
+npm run test:coverage # Coverage
+npm run test:e2e     # E2E only
+```
+EOF
+
+# If Playwright detected
+elif echo "$TEST_STACK" | grep -q "playwright"; then
+cat > .planning/codebase/TESTING.md << 'EOF'
+# Testing Strategy
+
+**Framework:** Playwright
+**Generated:** [date] during project initialization
+
+## Test Types
+
+| Type | Tool | Pattern |
+|------|------|---------|
+| E2E | Playwright | tests/*.spec.ts |
+| Unit | Vitest or Jest | (add separately) |
+
+## Commands
+
+```bash
+npx playwright test           # Run E2E tests
+npx playwright test --ui      # UI mode
+npx playwright test --headed   #headed mode
+```
+
+## Test Organization
+
+```
+tests/
+  auth.spec.ts       # Authentication flows
+  dashboard.spec.ts # Dashboard features
+  quiz.spec.ts      # Quiz flows
+```
+
+## Example Test
+
+```typescript
+import { test, expect } from '@playwright/test'
+
+test('login flow', async ({ page }) => {
+  await page.goto('/login')
+  await page.fill('[name=email]', 'test@example.com')
+  await page.fill('[name=password]', 'password123')
+  await page.click('button[type=submit]')
+  
+  await expect(page).toHaveURL('/dashboard')
+})
+```
+EOF
+
+# No test framework detected
+else
+cat > .planning/codebase/TESTING.md << 'EOF'
+# Testing Strategy
+
+**Framework:** Not detected — install to enable tests
+**Generated:** [date] during project initialization
+
+## Recommended Setup
+
+For Next.js + TypeScript:
+```bash
+npm install -D vitest @testing-library/react @testing-library/user-event jsdom
+npx playwright install
+```
+
+## Quick Start
+
+```bash
+# Unit tests with Vitest
+npm test
+
+# E2E tests with Playwright
+npx playwright test
+```
+
+## Test Types
+
+| Type | Tool | When to Use |
+|------|------|-------------|
+| Unit | Vitest | Functions, utilities |
+| Component | @testing-library/react | React components |
+| E2E | Playwright | Full user flows |
+EOF
+fi
+
+# Generate INTEGRATIONS.md based on detected services
+INT_STACK=$(cat package.json 2>/dev/null | grep -E '"supabase"|"@supabase|"stripe"|"auth0"|"sendgrid"|"aws-sdk"' || echo "")
+
+# If Supabase detected
+if echo "$INT_STACK" | grep -q "supabase"; then
 cat > .planning/codebase/INTEGRATIONS.md << 'EOF'
 # External Integrations
 
+**Detected:** Supabase (Auth + Database)
+**Generated:** [date] during project initialization
+
+## Supabase
+
+| Component | File | Purpose |
+|----------|------|---------|
+| Client (browser) | lib/supabase/client.ts | Public client, use in Client Components |
+| Client (server) | lib/supabase/server.ts | Server Actions, use in lib/ |
+| Middleware | lib/supabase/middleware.ts | Auth for Middleware |
+
+## Environment Variables
+
+```env
+SUPABASE_URL=your-project-url
+SUPABASE_ANON_KEY=your-anon-key
+```
+
+## Security
+
+- RLS policies: Enable on ALL tables
+- Never expose service_role key
+- Use @supabase/ssr for server components
+- Validate all input with Zod BEFORE insert
+
+## Real-time
+
+```typescript
+// Subscribe to changes
+const channel = supabase
+  .channel('table:name')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, 
+    (payload) => console.log(payload)
+  )
+  .subscribe()
+```
+EOF
+
+# If Stripe detected
+elif echo "$INT_STACK" | grep -q "stripe"; then
+cat > .planning/codebase/INTEGRATIONS.md << 'EOF'
+# External Integrations
+
+**Detected:** Stripe (Payments)
+**Generated:** [date] during project initialization
+
+## Stripe
+
+| Component | File | Purpose |
+|----------|------|---------|
+| Server | lib/stripe/server.ts | Create payment intents |
+| Webhooks | app/api/webhooks/stripe/route.ts | Handle events |
+
+## Environment Variables
+
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+## Payment Flow
+
+1. User clicks "Checkout"
+2. Server creates PaymentIntent
+3. Redirect to Stripe Checkout
+4. Webhook handles success/failure
+EOF
+
+# If multiple services
+elif echo "$INT_STACK" | grep -c "supabase\|stripe\|auth0" | grep -q "[2-9]"; then
+cat > .planning/codebase/INTEGRATIONS.md << 'EOF'
+# External Integrations
+
+**Detected:** Multiple services
+**Generated:** [date] during project initialization
+
+## Services
+
+| Service | Purpose | Status |
+|---------|---------|--------|
+| Supabase | Auth + Database | [Active] |
+| Stripe | Payments | [Active] |
+| [Other] | [Purpose] | [Active] |
+
+## API Keys
+
+- All keys in .env.local (NEVER commit)
+- Access via import.meta.env.VITE_* for client
+- Access via process.env for server
+
+## Security
+
+- Never log API keys
+- Rotate keys periodically
+- Use webhooks for sensitive operations
+EOF
+
+# No services detected
+else
+cat > .planning/codebase/INTEGRATIONS.md << 'EOF'
+# External Integrations
+
+**Detected:** No external services
 **Generated:** [date] during project initialization
 
 ## Currently Connected
 
 | Service | Purpose | Status |
 |---------|---------|--------|
-| [Service] | [Purpose] | [Active/Planned] |
+| None | - | - |
 
-## API Keys Required
+## Getting Started
 
-- [Key name]: [Where used]
+Common integrations to consider:
+- **Supabase** (free tier): Auth + Database + Realtime
+- **Stripe** (paid): Payments
+- **Auth0** (free tier): Authentication
 
-## Future Integrations
+## Environment Variables
 
-- [Service]: [Reason for adding]
+```env
+# When you add services:
+SERVICE_KEY=your-key-here
+```
 EOF
+fi
 
-# Generate CONCERNS.md (risks and constraints)
+# Generate CONCERNS.md with SaaS common risks
 cat > .planning/codebase/CONCERNS.md << 'EOF'
-# Project Concerns
+# Risks & Concerns
 
 **Generated:** [date] during project initialization
 
-## Risks
+## Security
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| [Risk] | [Impact] | [Mitigation] |
+| Concern | Risk | Mitigation |
+|--------|------|------------|
+| SQL Injection | User input → DB | Use parameterized queries, never string concat |
+| XSS | Malicious script | React escapes by default |
+| API Keys Leaked | Keys in client | Never, use Server Actions |
+| CSRF | Cross-site requests | Next.js CSRF built-in |
+| RLS Disabled | Data leak | Enable on ALL tables |
 
-## Constraints
+## Performance
 
-- [Constraint]: [Description]
+| Concern | Risk | Mitigation |
+|--------|------|------------|
+| Large Bundle | Slow load | Dynamic imports, code split |
+| Slow DB Query | Timeout | Add indexes, optimize SELECT |
+| Too Many Re-renders | Lag | React.memo, useMemo |
+| N+1 Queries | Latency | Use supabase RPC or batch |
 
-## Technical Decisions
+## Cost (SaaS)
 
-- [Decision]: [Rationale]
+| Resource | Limit | Monitor |
+|----------|-------|---------|
+| Supabase | 500MB, 25k rows | Dashboard usage |
+| Vercel | 100GB bandwidth | Vercel dashboard |
+| API calls | Rate limits | Log counts |
+| Storage | File sizes | S3/CDN |
+
+## Technical Constraints
+
+- **SSR**: Always use Server Components by default
+- **No API Routes**: Use Server Actions instead
+- **No Redux**: Use Zustand for client state only
+- **No localStorage for Auth**: Use Supabase Auth session
+
+## Gotchas
+
+- Remember revalidatePath() after data changes
+- RLS policies need for EACH table
+- Environment variables need restart on change
+- .env.local is NOT in git
 EOF
 
 node "[gsd-tools path]" commit "docs: define codebase blueprint (structure + conventions + architecture + stack + testing + integrations + concerns)" \

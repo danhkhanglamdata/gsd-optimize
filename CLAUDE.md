@@ -459,15 +459,42 @@ Link Auditor có trách nhiệm detect và đánh dấu `Stale` trong header.
 
 ## Memory & Git
 
-### Memory (MUST)
+### Conversation Memory (MUST)
 
-Trước khi bắt đầu: đọc tất cả files trong `memory/`.
+**QUAN TRỌNG: KHÔNG XÓA, CHỈ THÊM và APPEND**
 
-Sau mỗi session, tạo file:
+**Mỗi lần bắt đầu chat mới hoặc bắt đầu làm việc:**
+1. Đọc tất cả files trong `memory/` trước → Nắm toàn bộ lịch sử
+2. Xác định session trước đó đang ở đâu, task gì chưa xong
+3. Tiếp tục từ điểm dừng - KHÔNG bắt đầu lại từ đầu
+
+**Sau mỗi batch làm việc HOẶC trước khi session kết thúc:**
+- Đọc file session hiện tại (nếu có)
+- APPEND thêm phần mới - KHÔNG overwrite
+
+**Format để APPEND vào session file:**
+
+```markdown
+---
+
+## Session Update: YYYY-MM-DD HH:MM
+> Task: [tóm task]
+> Status: [in-progress | completed | blocked]
+
+### What Done This Session
+- [Một dòng mỗi task đã hoàn thành]
+
+### Next Steps
+- [Cái cần làm tiếp]
+
+### Open Questions  
+- [Cái chưa rõ]
 ```
-memory/YYYY-MM-DD-[action].md
-```
-Ghi lại: việc đã làm, kết quả, vấn đề phát hiện, bước tiếp theo.
+
+**ĐỌC TRƯỚC KHI VIẾT:**
+- Luôn đọc `memory/` trước khi hỏi user
+- Luôn đọc session file hiện tại trước khi append
+- Để biết đã làm gì ở các session trước
 
 ### Git (MUST)
 
