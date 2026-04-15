@@ -102,6 +102,87 @@
 
 ---
 
+## Session Update: 2026-04-15 17:45
+> Task: Audit discuss-phase hybrid implementation
+> Status: completed
+
+### What Done This Session
+- Đọc chi tiết: command file, workflow file, agent file
+- Phát hiện 6 issues nghiêm trọng:
+  1. PROJECT_SPECIFIC search terms (line 312)
+  2. Wrong path references (@.claude/ vs gsd-template/)
+  3. Duplicate detection logic (command + workflow)
+  4. SPEC output format không match design
+  5. Action doc stale (không reflect changes)
+  6. Session file missing commit entry
+
+### Issues Found (Critical)
+- [workflows/discuss-phase.md:312] — PROJECT_SPECIFIC: "mobile app design trends 2025", "event app gamification"
+- [commands/discuss-phase.md:36-39] — HARDCODED_PATH: @.claude/ paths wrong
+- [commands/discuss-phase.md:77-79] — DUPLICATE: detection logic appears twice
+- [workflows/write_context] — MISSING: spec_reference section
+
+### Proposals Created
+- docs/proposals/2026-04-15-fix-discuss-phase-project-specific-search.md
+- docs/proposals/2026-04-15-fix-discuss-phase-wrong-paths.md
+- docs/proposals/2026-04-15-consolidate-spec-detection-logic.md
+- docs/proposals/2026-04-15-fix-spec-output-format.md
+
+### Next Steps
+- User review và approve proposals
+- Fix các issues sau khi approved
+
+---
+
+## Session Update: 2026-04-15 18:15
+> Task: Fix approved discuss-phase issues
+> Status: completed
+
+### What Done This Session
+- ✅ Fix P1: PROJECT_SPECIFIC search terms (line 312)
+  - Changed: "mobile app design trends 2025", "event app gamification"
+  - → "[feature-domain] design trends 2025", "[feature-domain] UX patterns", "engagement UI patterns"
+  
+- ✅ Partially P1: Path references
+  - Keep @.claude/ as convention (verified all commands use same pattern)
+  - This is intentional for gsd-tools resolution
+  
+- ✅ Fix P2: Duplicate detection logic (command file)
+  - Simplified step 8 to reference workflow step
+  
+- ✅ Fix P2: SPEC output format
+  - Added SPEC mode format to write_context step with spec_reference section
+
+### Next Steps
+- Commit all fixes
+- Run /explore-template to update docs
+
+---
+
+## Session Update: 2026-04-15 18:30
+> Task: Run audit and fix stale docs
+> Status: completed
+
+### What Done This Session
+- ✅ Run /explore-template --audit-only
+- ✅ Audit report: PROJECT_SPECIFIC in gsd-template FIXED
+- ✅ Found stale docs: 2 files with old search terms
+- ✅ Fixed docs/actions/discuss-phase.md
+- ✅ Fixed docs/component-flows/discuss-phase-flow.md
+- ✅ Updated status: Stale → Approved
+
+### Audit Results
+- Broken References: 0
+- PROJECT_SPECIFIC (gsd-template): FIXED ✓
+- CONTRADICTS: 1 (docs vs source - now fixed)
+- Ambiguous Instructions: 0
+
+### Next Steps
+- Commit all changes
+- Push to GitHub
+
+---
+
 ## Session Update: 2026-04-15 15:30
 > Task: Kiểm tra templates codebase (structure.md, architecture.md, stack.md)
 > Status: completed

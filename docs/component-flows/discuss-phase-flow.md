@@ -126,7 +126,7 @@ workflows/discuss-phase.md  [12 steps: <step> XML format]
 - Kiểm tra `<prior_decisions>` cho các quyết định đã có
 - Generate 2-4 phase-specific gray areas với code context annotations
 - Load ux-brainstormer skill: `.claude/skills/ux-brainstormer/SKILL.md`
-- Search trends: "mobile app design trends 2025", "event app gamification"
+- Search trends: "[feature-domain] design trends 2025", "[feature-domain] UX patterns", "engagement UI patterns"
 - Generate 2-3 creative enhancement ideas
 
 **Output bước này:** Internal analysis (in-memory)

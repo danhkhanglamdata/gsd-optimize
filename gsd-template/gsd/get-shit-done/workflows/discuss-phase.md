@@ -309,7 +309,7 @@ Analyze the phase to identify gray areas worth discussing. **Use both `prior_dec
 
 4. **Creative enhancement (UX Brainstorming)** — For UI/UX focused phases, generate creative suggestions using ux-brainstormer skill:
    - Load: `.claude/skills/ux-brainstormer/SKILL.md`
-   - Search for latest trends: "mobile app design trends 2025", "event app gamification"
+   - Search for latest trends: "[feature-domain] design trends 2025", "[feature-domain] UX patterns", "engagement UI patterns"
    - Generate 2-3 creative enhancement ideas specific to the phase feature
    - Present these as optional "delight moments" the user can choose
 
@@ -584,6 +584,10 @@ Track deferred ideas internally.
 <step name="write_context">
 Create CONTEXT.md capturing decisions made.
 
+**SPEC mode handling:** If SPEC mode was detected in detect_input_type step, the agent returns parsed spec summary. Inject this into <decisions> section with SPEC format (see below).
+
+**DISCUSS mode:** Use standard format (below).
+
 **Find or create phase directory:**
 
 Use values from init: `phase_dir`, `phase_slug`, `padded_phase`.
@@ -595,7 +599,50 @@ mkdir -p ".planning/phases/${padded_phase}-${phase_slug}"
 
 **File location:** `${phase_dir}/${padded_phase}-CONTEXT.md`
 
-**Structure the content by what was discussed:**
+**If SPEC mode (from detect_input_type):**
+```markdown
+# Phase [X]: [Name] - Context
+
+**Gathered:** [date]
+**Input Mode:** SPEC
+**Status:** Ready for planning
+
+<domain>
+## Phase Boundary
+
+[Clear statement of what this phase delivers]
+
+</domain>
+
+<decisions>
+## Implementation Decisions
+
+### From Spec Provided
+- **File Structure:** [components], [hooks], [utils], [types]
+- **Constants:** [key=value] pairs
+- **Validators:** [function signatures with rules]
+- **UX Requirements:** [categorized checklist]
+- **Error Messages:** [categorized]
+- **Security Notes:** [list]
+
+</decisions>
+
+.spec_reference
+## Original Specification
+
+Full spec preserved at: `.planning/phases/${padded_phase}-${phase_slug}/${padded_phase}-spec-original.md`
+Parser: gsd-requirement-explorer
+Parsed: [date]
+
+<canonical_refs>
+## Canonical References
+[Same as below]
+</canonical_refs>
+
+[code_context, specifics, deferred sections as below]
+```
+
+**If DISCUSS mode (default):**
 
 ```markdown
 # Phase [X]: [Name] - Context
