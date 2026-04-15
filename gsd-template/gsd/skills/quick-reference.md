@@ -22,7 +22,7 @@ Research gamification UI for young audience
 ```
 Analyze https://kahoot.com and apply to quiz feature
 ```
-→ AI will fetch, document design patterns, suggest EventVibe adaptations
+→ AI will fetch, document design patterns, suggest e adaptations
 
 ### Get Creative Suggestions
 ```

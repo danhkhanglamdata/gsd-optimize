@@ -1,11 +1,11 @@
 ---
 name: clean-code-enforcer
-description: Machine-enforceable code quality rules for EventVib — TypeScript strict, Next.js 15 App Router, Supabase error handling, no magic strings. Apply when reviewing or generating any source file.
+description: Machine-enforceable code quality rules for  — TypeScript strict, Next.js 15 App Router, Supabase error handling, no magic strings. Apply when reviewing or generating any source file.
 ---
 
 # clean-code-enforcer
 
-Machine-enforceable rules for EventVib code quality. Every rule has an ID, condition, requirement, and verify command.
+Machine-enforceable rules for  code quality. Every rule has an ID, condition, requirement, and verify command.
 
 ---
 
@@ -18,7 +18,7 @@ Machine-enforceable rules for EventVib code quality. Every rule has an ID, condi
 // Always destructure error and check it
 const { data, error } = await supabase.from('events').select('*')
 if (error) {
-  console.error('[EventVib] fetch events failed:', error.message)
+  console.error('[] fetch events failed:', error.message)
   // Return early or throw — never silently ignore
   return { error }
 }
@@ -203,8 +203,8 @@ grep -rln "from '@/lib/supabase/server'" src --include="*.tsx" | xargs grep -l "
 **REQUIRED:**
 ```tsx
 // Structured logging with prefix
-console.error('[EventVib] description:', error)
-console.warn('[EventVib] description:', context)
+console.error('[] description:', error)
+console.warn('[] description:', context)
 
 // Development-only debug (wrap in condition)
 if (process.env.NODE_ENV === 'development') {

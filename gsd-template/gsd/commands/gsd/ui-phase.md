@@ -24,11 +24,11 @@ Flow: Validate → Research UI → Creative Enhancements → Verify UI-SPEC → 
 </objective>
 
 <execution_context>
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/workflows/ui-phase.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/references/ui-brand.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/skills/ux-brainstormer/SKILL.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/skills/style-adapter/SKILL.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/skills/beautiful-ui-generator/SKILL.md
+@.claude/get-shit-done/workflows/ui-phase.md
+@.claude/get-shit-done/references/ui-brand.md
+@.claude/skills/ux-brainstormer/SKILL.md
+@.claude/skills/style-adapter/SKILL.md
+@.claude/skills/beautiful-ui-generator/SKILL.md
 </execution_context>
 
 <project_skills>
@@ -85,7 +85,7 @@ Phase number: $ARGUMENTS — optional, auto-detects next unplanned phase if omit
 <process>
 1. **LOAD PROJECT SKILLS FIRST** — Read ux-brainstormer, style-adapter, beautiful-ui-generator SKILL.md
 2. **ESTABLISH AESTHETIC DIRECTION** — Invoke `Skill(skill="frontend-design:frontend-design")` to define tone, typography, color, motion, and spatial composition. Capture as `<aesthetic_direction>` block.
-3. Execute @C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/workflows/ui-phase.md end-to-end, passing `<aesthetic_direction>` to gsd-ui-researcher spawn prompt.
+3. Execute @.claude/get-shit-done/workflows/ui-phase.md end-to-end, passing `<aesthetic_direction>` to gsd-ui-researcher spawn prompt.
 4. **ENSURE creative enhancements are included:**
    - Research gamification UI trends
    - Generate delight moment suggestions

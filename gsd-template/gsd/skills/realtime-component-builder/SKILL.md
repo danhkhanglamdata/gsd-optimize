@@ -5,7 +5,7 @@ description: Build Supabase realtime logic - subscriptions, broadcast, live upda
 
 # realtime-component-builder
 
-Build reliable realtime features with Supabase for EventVibe.
+Build reliable realtime features with Supabase for e.
 
 ## Realtime Requirements
 

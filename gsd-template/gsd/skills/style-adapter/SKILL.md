@@ -5,7 +5,7 @@ description: Convert pasted CSS/HTML from DevTools or inspiration sites to Tailw
 
 # style-adapter
 
-Convert external CSS/HTML to EventVibe's Tailwind v4 + shadcn/ui patterns. Analyze inspiration sites and research gamification UI.
+Convert external CSS/HTML to e's Tailwind v4 + shadcn/ui patterns. Analyze inspiration sites and research gamification UI.
 
 ## Usage Modes
 
@@ -21,7 +21,7 @@ When user pastes CSS/HTML from DevTools or inspiration:
    - Animations/transitions
 
 2. **Convert to Tailwind:**
-   - Map colors to EventVibe palette or create custom classes
+   - Map colors to e palette or create custom classes
    - Convert flex/grid to Tailwind
    - Convert px to spacing scale (4px base)
    - Map animations to Framer Motion
@@ -77,7 +77,7 @@ When user provides a URL to study (e.g., Kahoot, quiz apps, gamification sites):
 - Loading states: [type]
 
 ### Action Items
-- [ ] Apply [specific pattern] to [EventVibe feature]
+- [ ] Apply [specific pattern] to [e feature]
 - [ ] Customize [element] for mobile
 - [ ] Add [animation] for [interaction]
 ```
@@ -175,9 +175,9 @@ Convert to shadcn/ui:
 - Inputs → `<Input>`
 - Dialogs → `<Dialog>`
 
-## EventVibe Integration
+## e Integration
 
-Always adapt to EventVibe's design system:
+Always adapt to e's design system:
 - Dark mode base
 - Neon accent colors (#6366f1 → #ec4899)
 - Mobile-first (375px)

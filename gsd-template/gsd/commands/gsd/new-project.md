@@ -29,16 +29,16 @@ Initialize a new project through unified flow: questioning → research (optiona
 </objective>
 
 <execution_context>
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/workflows/new-project.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/references/questioning.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/references/ui-brand.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/project.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/requirements.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/brainstorm.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/agents/gsd-ideator.md
+@.claude/get-shit-done/workflows/new-project.md
+@.claude/get-shit-done/references/questioning.md
+@.claude/get-shit-done/references/ui-brand.md
+@.claude/get-shit-done/templates/project.md
+@.claude/get-shit-done/templates/requirements.md
+@.claude/get-shit-done/templates/brainstorm.md
+@.claude/agents/gsd-ideator.md
 </execution_context>
 
 <process>
-Execute the new-project workflow from @C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/workflows/new-project.md end-to-end.
+Execute the new-project workflow from @.claude/get-shit-done/workflows/new-project.md end-to-end.
 Preserve all workflow gates (validation, approvals, commits, routing).
 </process>

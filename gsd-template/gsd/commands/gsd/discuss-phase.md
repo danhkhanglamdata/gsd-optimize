@@ -33,10 +33,10 @@ Extract implementation decisions that downstream agents need — researcher and 
 </objective>
 
 <execution_context>
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/workflows/discuss-phase.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/context.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/skills/ux-brainstormer/SKILL.md
-@C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/skills/style-adapter/SKILL.md
+@.claude/get-shit-done/workflows/discuss-phase.md
+@.claude/get-shit-done/templates/context.md
+@.claude/skills/ux-brainstormer/SKILL.md
+@.claude/skills/style-adapter/SKILL.md
 </execution_context>
 
 <project_skills>

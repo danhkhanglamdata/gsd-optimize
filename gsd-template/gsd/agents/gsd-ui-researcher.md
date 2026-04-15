@@ -178,7 +178,7 @@ Ask user which creative enhancements they want:
 ```
 ## 💡 Creative Enhancements
 
-Based on current trends and EventVibe vibe, here are suggestions for [feature]:
+Based on current trends and e vibe, here are suggestions for [feature]:
 
 1. **[Enhancement name]** — [description + visual effect]
 2. **[Enhancement name]** — [description + visual effect]
@@ -258,7 +258,7 @@ Scan the output for suspicious patterns:
 
 ## Output: UI-SPEC.md
 
-Use template from `C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/UI-SPEC.md`.
+Use template from `.claude/get-shit-done/templates/UI-SPEC.md`.
 
 Write to: `$PHASE_DIR/$PADDED_PHASE-UI-SPEC.md`
 
@@ -317,14 +317,14 @@ Batch questions into a single interaction where possible.
 
 ## Step 5: Compile UI-SPEC.md
 
-Read template: `C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/templates/UI-SPEC.md`
+Read template: `.claude/get-shit-done/templates/UI-SPEC.md`
 
 Fill all sections. Write to `$PHASE_DIR/$PADDED_PHASE-UI-SPEC.md`.
 
 ## Step 6: Commit (optional)
 
 ```bash
-node "C:/Users/Admin/OneDrive/Máy tính/review_gsd/.claude/get-shit-done/bin/gsd-tools.cjs" commit "docs($PHASE): UI design contract" --files "$PHASE_DIR/$PADDED_PHASE-UI-SPEC.md"
+node .claude/get-shit-done/bin/gsd-tools.cjs" commit "docs($PHASE): UI design contract" --files "$PHASE_DIR/$PADDED_PHASE-UI-SPEC.md"
 ```
 
 ## Step 7: Return Structured Result

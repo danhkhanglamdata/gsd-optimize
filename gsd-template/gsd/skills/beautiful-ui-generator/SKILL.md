@@ -1,11 +1,11 @@
 ---
 name: beautiful-ui-generator
-description: Machine-enforceable UI rules for EventVib — Tailwind v4, shadcn/ui, Framer Motion, mobile-first. Apply when generating or reviewing any UI component.
+description: Machine-enforceable UI rules for  — Tailwind v4, shadcn/ui, Framer Motion, mobile-first. Apply when generating or reviewing any UI component.
 ---
 
 # beautiful-ui-generator
 
-Machine-enforceable rules for EventVib UI. Every rule has an ID, condition, requirement, and verify command.
+Machine-enforceable rules for  UI. Every rule has an ID, condition, requirement, and verify command.
 
 ---
 

@@ -41,7 +41,7 @@ Before verifying, discover project context:
    Read: .claude/skills/beautiful-ui-generator/SKILL.md
    ```
 
-These help verify creative elements meet EventVibe's design standards.
+These help verify creative elements meet e's design standards.
 </project_context>
 
 <upstream_input>

@@ -5,7 +5,7 @@ description: Brainstorm creative UI/UX, research gamification patterns for young
 
 # ux-brainstormer
 
-Brainstorm creative, trendy UI/UX for EventVibe. Research gamification patterns. Analyze inspiration sites.
+Brainstorm creative, trendy UI/UX for e. Research gamification patterns. Analyze inspiration sites.
 
 ## Two Main Capabilities
 
@@ -23,7 +23,7 @@ Brainstorm creative, trendy UI/UX for EventVibe. Research gamification patterns.
 
 ## Part 1: Brainstorming
 
-### EventVibe Core Vibe
+### e Core Vibe
 - **Energetic** - Live events should feel exciting and dynamic
 - **Social** - Encourage interaction between attendees
 - **Instant** - No friction, works immediately
@@ -130,7 +130,7 @@ When brainstorming, propose:
 1. **Mobile-first always** - Design for 375px first, then scale up
 2. **Performance conscious** - Animations should be 60fps
 3. **Accessibility** - High contrast, ARIA labels, keyboard nav
-4. **Consistency** - Match existing EventVibe design language
+4. **Consistency** - Match existing e design language
 5. **Fun but not distracting** - Celebration yes, overwhelming no
 
 ---
@@ -175,7 +175,7 @@ WebSearch: "quiz game animations inspiration"
 
 #### Color Scheme
 - [Colors used by leaders in this space]
-- [How to adapt for EventVibe]
+- [How to adapt for e]
 
 #### Typography
 - [Font choices]
@@ -190,11 +190,11 @@ WebSearch: "quiz game animations inspiration"
 - [How they celebrate wins]
 - [How they keep young audience engaged]
 
-### Recommendations for EventVibe
+### Recommendations for e
 
 | Element | Inspiration | Proposal |
 |---------|------------|----------|
-| [Feature] | [From Kahoot/etc] | [EventVibe adaptation] |
+| [Feature] | [From Kahoot/etc] | [e adaptation] |
 
 ### Action Items
 - [ ] Apply [pattern] to [feature]
@@ -238,7 +238,7 @@ WebSearch: "quiz game animations inspiration"
 2. [Finding 2]
 3. [Finding 3]
 
-### EventVibe Recommendations
+### e Recommendations
 
 #### Must-Have
 - [Element] — [why] — [implementation]
