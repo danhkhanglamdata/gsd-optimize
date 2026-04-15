@@ -197,3 +197,38 @@
 
 ### Open Questions
 - Format dans các file cần cải thiện thêm?
+---
+
+## Session Update: 2026-04-15 19:00
+> Task: Kiểm tra executor cho frontend + CONVENTIONS.md design analysis
+> Status: completed
+
+### What Done This Session
+- Kiểm tra gsd-executor.md - đọc đúng CONVENTIONS.md và STRUCTURE.md
+- Phát hiện: executor đọc CONVENTIONS.md từ .planning/codebase/ (đúng design)
+- Phân tích clean-code-enforcer + beautiful-ui-generator skills
+- Phát hiện 3 rules trong new-project workflow (lines 1244-1279):
+  - RULE-CC-04: Server vs Client Component (Next.js specific)
+  - RULE-CC-05: Supabase Client Selection (Supabase specific)
+  - RULE-CC-09: Server Actions (Next.js specific)
+
+### Design Issue Phát Hiện
+- **CONVENTIONS.md = What the codebase USES** (observational), không phải What it must follow (prescriptive)
+- 3 rules này đang **hardcoded** vào workflow, không phải **extract** từ scan codebase
+- Template nên: scan code → observe patterns → document as CONVENTIONS.md
+- Không nên: inject hardcoded rules → CONVENTIONS.md
+
+### Frontend Design Plugin
+- Plugin frontend-design đã được tích hợp vào ui-phase.md (lines 52-68)
+- gsd-executor KHÔNG load skills - theo design đúng (rules in CONVENTIONS.md)
+- Nhưng CONVENTIONS.md template chưa được populate đầy đủ
+
+### Skills có PROJECT_SPECIFIC Issues
+- clean-code-enforcer.md: Supabase, Next.js 15 App Router (lines 3-4)
+- beautiful-ui-generator.md: Teal/Coral Brand, hardcoded colors (lines 32-43)
+
+### Open Questions
+- Nên fix CONVENTIONS.md template để scan + observe thay vì hardcode rules?
+
+### Next Steps
+- Commit all changes to GitHub
