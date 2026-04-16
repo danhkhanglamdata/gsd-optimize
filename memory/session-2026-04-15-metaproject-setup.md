@@ -266,3 +266,127 @@
 ### Next Steps
 - Tiep tuc explore GSD phases hoặc commit any pending changes
 - **NOTE:** Mọi thay đổi đều phải note vào memory file
+
+---
+
+## Session Update: 2026-04-16 10:00
+> Task: Full explore gsd-template
+> Status: completed
+
+### GSD-Template Version
+- **Version:** 1.25.1
+- **GitHub:** https://github.com/gsd-build/get-shit-done
+
+### Template Structure Overview
+| Category | Count | Description |
+|----------|-------|-------------|
+| Commands | 38 | GSD slash commands |
+| Agents | 17 | Specialized subagents |
+| Workflows | 40 | Core logic workflows |
+| Templates | 26 | Input/output templates |
+| References | 14 | Design patterns |
+| Hooks | 4 | Automation hooks |
+
+### 5 Core Commands (GSD Workflow)
+| Command | File | Purpose |
+|---------|------|---------|
+| `/gsd:new-project` | new-project.md | Initialize project |
+| `/gsd:discuss-phase` | discuss-phase.md | Gather requirements |
+| `/gsd:plan-phase` | plan-phase.md | Create execution plan |
+| `/gsd:execute-phase` | execute-phase.md | Execute plans |
+| `/gsd:verify-work` | verify-work.md | Validate deliverables |
+
+### Core Agents
+- gsd-planner.md - Tạo PLAN.md
+- gsd-executor.md - Execute với wave-based parallelization
+- gsd-phase-researcher.md - Research domain trước planning
+- gsd-verifier.md - Validate deliverables
+- gsd-requirement-explorer.md - Parse spec (NEW - Hybrid discuss-phase)
+- gsd-roadmapper.md - Tạo ROADMAP.md
+- gsd-codebase-mapper.md - Analyze codebase
+- gsd-ui-researcher.md - Research UI/UX
+- gsd-nyquist-auditor.md - Validation gaps
+- gsd-integration-checker.md - Cross-phase E2E
+
+### Templates
+- context.md - CONTEXT.md output
+- brainstorm.md - Creative suggestions
+- codebase/ - 7 templates (ARCHITECTURE.md, STACK.md, etc.)
+- continue-here.md - Session handoff
+
+### References
+- questioning.md - Questioning patterns
+- codebase-blueprint.md - Codebase generation
+- verification-patterns.md - Validation patterns
+- tdd.md - Test-driven development
+- ui-brand.md - UI design
+
+### Hooks
+- gsd-check-update.js - Check for updates
+- gsd-context-monitor.js - Monitor context
+- gsd-statusline.js - Status line UI
+- gsd-post-execute-chain.js - Post-execute automation
+
+### Next Steps
+- Explore chi tiết từng command hoặc bắt đầu working với 1 feature
+
+---
+
+## Session Update: 2026-04-16 10:30
+> Task: Explore new-project và integration FRONTEND_SAAS_STANDARDS.md
+> Status: pending (chờ approve để thực hiện)
+
+### What Discovered
+
+#### 1. CONVENTIONS.md - Được Tạo Ra Khi Chạy new-project
+- **Từ workflow:** new-project.md step "Generate .planning/codebase/CONVENTIONS.md"
+- **Ai đọc:** gsd-executor.md (line 33, 71)
+- **Executor đọc và TUÂN THEO** - Đã có trong code
+
+#### 2. Template Files Trong .planning/codebase/
+| File | Ai Đọc | Khi Nào |
+|------|-------|---------|
+| CONVENTIONS.md | Executor | Execute phase |
+| ARCHITECTURE.md | Planner, Mapper | Plan phase |
+| STACK.md | Executor, Mapper | Execute phase |
+| STRUCTURE.md | Executor, Mapper | Execute phase |
+| TESTING.md | Executor | Execute phase |
+| INTEGRATIONS.md | Mapper | Analyze |
+| CONCERNS.md | Mapper | Analyze |
+
+#### 3. FRONTEND_SAAS_STANDARDS.md Analysis
+- File rất chi tiết: 800+ lines
+- Bao gồm đầy đủ: directory structure, code rules, naming, state management, services, routing, feature gating, UI/styling, performance, environment, workflow, git, checklist
+- **Cần tích hợp** vào gsd-template templates
+
+#### 4. Integration Approach (ĐÃ APPROVE)
+- **Cách 1:** Sửa trực tiếp template trong new-project workflow
+- Thay content của CONVENTIONS.md, ARCHITECTURE.md, etc. = FRONTEND_SAAS_STANDARDS content
+- Không cần sửa execution flow - Executor tự đọc và follow
+- Template đúng → Executor follow → Output đúng chuẩn
+
+#### 5. Files Cần Sửa Trong new-project.md Workflow
+| File | Content từ FRONTEND_SAAS_STANDARDS |
+|------|-----------------------------------|
+| CONVENTIONS.md | Sections 2, 4, 5, 6, 7, 10 |
+| ARCHITECTURE.md | Sections 1, 7 (API patterns) |
+| STACK.md | Detect from package.json |
+| STRUCTURE.md | Section 2 - Cấu trúc thư mục |
+| TESTING.md | Từ file khác hoặc add |
+| INTEGRATIONS.md | Section 7 - Services & API |
+| CONCERNS.md | Sections 11, 12 - Performance, Environment |
+
+#### 6. Approval Status
+- [x] Hiểu flow: new-project → discuss → plan → execute → verify
+- [x] Executor đọc CONVENTIONS.md - ĐÃ VERIFY
+- [x] Sửa template = Cách đơn giản nhất
+- [ ] CHƯA THỰC HIỆN - pending user approval
+
+### Actions Cần Làm (Khi Approve)
+1. Đọc FRONTEND_SAAS_STANDARDS.md đầy đủ
+2. Tạo proposal trong docs/proposals/
+3. Sửa template trong new-project.md workflow cho 7 files
+4. Test với sample phase
+
+### Open Questions
+- Cần sửa tất cả 7 files hay chỉ CONVENTIONS.md trước?
